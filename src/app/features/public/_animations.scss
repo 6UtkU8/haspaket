@@ -98,18 +98,21 @@
   animation: hp-enter-fade-up 0.52s var(--hp-ease-out) 0.14s forwards;
 }
 
-.hp-reveal {
+.hp-reveal:not(.hp-reveal--visible) {
   opacity: 0;
   transition: opacity var(--hp-motion-reveal) var(--hp-ease-out);
+  pointer-events: none;
 }
 
-.hp-reveal--visible {
+.hp-reveal.hp-reveal--visible {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .hp-landing--reduce-motion .hp-reveal {
   opacity: 1;
   transition: none;
+  pointer-events: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -130,6 +133,7 @@
   .hp-reveal {
     opacity: 1 !important;
     transition: none !important;
+    pointer-events: auto !important;
   }
 
   .hp-navbar__brand:hover .hp-navbar__logo {
@@ -139,5 +143,21 @@
   .hp-btn--primary:active,
   .hp-btn--ghost:active {
     transform: none !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .hp-landing:not(.hp-landing--reduce-motion) .hp-navbar__logo,
+  .hp-landing:not(.hp-landing--reduce-motion) .hp-navbar,
+  .hp-landing:not(.hp-landing--reduce-motion) .hp-navbar__nav,
+  .hp-landing:not(.hp-landing--reduce-motion) .hp-navbar__actions,
+  .hp-landing:not(.hp-landing--reduce-motion) .hp-navbar__toggle,
+  .hp-landing:not(.hp-landing--reduce-motion) .hp-hero__glow,
+  .hp-landing:not(.hp-landing--reduce-motion) .hp-hero__copy > *,
+  .hp-landing:not(.hp-landing--reduce-motion) .hp-hero__mock-wrap {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }

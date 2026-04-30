@@ -14,7 +14,14 @@
   min-height: 100vh;
   width: 100%;
   max-width: 100%;
+  min-width: 0;
   overflow-x: clip;
+}
+
+.hp-footer__desc,
+.hp-footer__links,
+.hp-footer__links a {
+  overflow-wrap: anywhere;
 }
 
 .hp-landing > main {

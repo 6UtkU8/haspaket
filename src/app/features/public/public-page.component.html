@@ -20,14 +20,8 @@
         />
       </a>
 
-      <nav class="hp-navbar__nav" aria-label="Ana menü">
-        <a
-          routerLink="/"
-          fragment="ust"
-          class="hp-nav__link"
-          (click)="onAnasayfaClick($event)"
-          >Anasayfa</a
-        >
+        <nav class="hp-navbar__nav" aria-label="Ana menü">
+        <a href="/" class="hp-nav__link" (click)="onAnasayfaClick($event)">Anasayfa</a>
         <a href="#ozellikler" class="hp-nav__link">Özellikler</a>
         <a href="#nasil-calisir" class="hp-nav__link">Nasıl Çalışır</a>
         <a href="#iletisim" class="hp-nav__link">İletişim</a>
@@ -83,13 +77,7 @@
           </svg>
         </button>
         <nav class="hp-navbar__drawer-nav" aria-label="Mobil menü">
-          <a
-            routerLink="/"
-            fragment="ust"
-            class="hp-nav__link"
-            (click)="closeMenu(); onAnasayfaClick($event)"
-            >Anasayfa</a
-          >
+          <a href="/" class="hp-nav__link" (click)="onAnasayfaClick($event)">Anasayfa</a>
           <a href="#ozellikler" class="hp-nav__link" (click)="closeMenu()"
             >Özellikler</a
           >
@@ -404,12 +392,7 @@
           <p class="hp-footer__label">Hızlı bağlantılar</p>
           <ul class="hp-footer__links">
             <li>
-              <a
-                routerLink="/"
-                fragment="ust"
-                (click)="onAnasayfaClick($event)"
-                >Anasayfa</a
-              >
+              <a href="/" (click)="onAnasayfaClick($event)">Anasayfa</a>
             </li>
             <li><a href="#ozellikler">Özellikler</a></li>
             <li><a href="#nasil-calisir">Nasıl Çalışır</a></li>

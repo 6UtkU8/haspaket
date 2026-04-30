@@ -13,6 +13,9 @@
   max-width: var(--hp-content-max);
   margin: 0 auto;
   padding: clamp(2.75rem, 6.5vw, 4.25rem) var(--hp-pad-x) var(--hp-space-section);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .hp-hero__glow {
@@ -36,6 +39,8 @@
   display: grid;
   gap: clamp(2.25rem, 5vw, 3.75rem);
   align-items: center;
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (min-width: 960px) {
@@ -73,6 +78,7 @@
   letter-spacing: -0.032em;
   font-weight: 700;
   color: var(--hp-color-text);
+  overflow-wrap: anywhere;
 }
 
 .hp-hero__title-accent {

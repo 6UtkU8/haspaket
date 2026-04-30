@@ -330,3 +330,35 @@
     transform: none;
   }
 }
+
+@media (max-width: 767.98px) {
+  .hp-navbar {
+    z-index: 520;
+    backdrop-filter: blur(5px) saturate(1.04);
+    -webkit-backdrop-filter: blur(5px) saturate(1.04);
+  }
+
+  .hp-navbar__inner {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  .hp-navbar__toggle {
+    touch-action: manipulation;
+    flex-shrink: 0;
+  }
+
+  .hp-navbar__brand {
+    min-width: 0;
+  }
+
+  .hp-navbar__drawer {
+    z-index: 530;
+  }
+
+  .hp-scroll-top {
+    z-index: 525;
+  }
+}

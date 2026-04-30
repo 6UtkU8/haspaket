@@ -5,6 +5,7 @@
 }
 
 html {
+  overflow-x: hidden;
   scroll-behavior: smooth;
   /* Drawer / modal açıldığında scrollbar kaybı için layout shift azaltır (padding telafisi ile birlikte) */
   scrollbar-gutter: stable;
@@ -18,6 +19,7 @@ body {
 }
 
 body {
+  overflow-x: hidden;
   font-family: var(--hp-font-body);
   background: var(--hp-body-gradient);
   background-color: var(--hp-color-bg);
@@ -45,4 +47,11 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: var(--hp-color-surface);
   box-shadow: var(--hp-shadow-card), var(--hp-glow-primary);
+}
+
+app-root {
+  display: block;
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100%;
 }

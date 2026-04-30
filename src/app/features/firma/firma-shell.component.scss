@@ -431,7 +431,7 @@
   display: flex;
   flex-direction: column;
   width: min(100%, 26rem);
-  max-width: 100vw;
+  max-width: 100%;
   background: color-mix(in srgb, var(--hp-color-surface) 96%, transparent);
   border-left: 1px solid var(--hp-color-border);
   box-shadow: var(--hp-shadow-drawer);

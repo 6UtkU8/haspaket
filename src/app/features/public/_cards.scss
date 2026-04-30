@@ -1,5 +1,7 @@
 .hp-hero__mock-wrap {
   position: relative;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .hp-hero__mock {

@@ -8,7 +8,9 @@ import {
   signal,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { HpBrandLogoComponent } from '../../shared/ui/hp-brand-logo.component';
 
 const INTRO_STORAGE_KEY = 'haspaket_lp_intro_v1';
@@ -35,6 +37,13 @@ export class PublicPageComponent {
   private observer?: IntersectionObserver;
 
   constructor() {
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.closeMenu());
+
     afterNextRender(() => {
       if (!isPlatformBrowser(this.platformId)) {
         return;
@@ -139,8 +148,13 @@ export class PublicPageComponent {
     this.menuOpen.set(false);
   }
 
+  /**
+   * SPA navigasyonu tek kaynaktan; `routerLink + preventDefault()` birlikte ilk tıkta rotayı kilitliyordu.
+   * `href="/"` yedek davranış için bırakılıyor, `preventDefault` yalnızca programatik `navigate` ile eşleşir.
+   */
   onAnasayfaClick(event: MouseEvent): void {
     event.preventDefault();
+    this.closeMenu();
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
