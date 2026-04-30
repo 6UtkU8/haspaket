@@ -1,0 +1,104 @@
+<div class="hp-adash hp-shell-page">
+  <section class="hp-adash__kpis hp-shell-stagger" aria-label="Platform KPI">
+    @for (k of kpis; track k.key) {
+      <hp-kpi-card
+        [label]="k.label"
+        [value]="k.value"
+        [hint]="k.hint"
+        [icon]="k.icon"
+        [isCurrency]="k.isCurrency"
+      />
+    }
+  </section>
+
+  <section class="hp-adash__map-section hp-shell-stagger" aria-label="Canlı harita">
+    <hp-panel-card [toolbar]="true">
+      <span panel-actions class="hp-adash__map-live">Önizleme</span>
+      @defer (on idle) {
+        <hp-admin-live-map />
+      } @placeholder {
+        <div class="hp-adash__map-skeleton" aria-hidden="true">
+          <span class="hp-adash__map-skeleton-text">Harita yükleniyor...</span>
+        </div>
+      }
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-adash__mid hp-shell-stagger" aria-label="Aktivite ve operasyon">
+    <hp-panel-card title="Son aktiviteler">
+      <span panel-actions class="hp-adash__live">Canlı</span>
+      <div class="hp-adash__table-wrap">
+        <table class="hp-adash__table">
+          <thead>
+            <tr>
+              <th scope="col">Zaman</th>
+              <th scope="col">Tür</th>
+              <th scope="col">Detay</th>
+              <th scope="col" class="hp-adash__th-end">Durum</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of recentActivity(); track row.id) {
+              <tr>
+                <td class="hp-adash__td-time">{{ row.time }}</td>
+                <td><span class="hp-adash__type">{{ row.kind }}</span></td>
+                <td>{{ row.detail }}</td>
+                <td class="hp-adash__td-end">
+                  <span
+                    class="hp-adash__pill"
+                    [class.hp-adash__pill--warn]="row.warn"
+                    >{{ row.status }}</span
+                  >
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Hızlı özet dağılımı">
+      <ul class="hp-adash__pipe" role="list">
+        @for (p of operationPipeline; track p.label) {
+          <li class="hp-adash__pipe-row">
+            <div class="hp-adash__pipe-meta">
+              <span class="hp-adash__pipe-label">{{ p.label }}</span>
+              <span class="hp-adash__pipe-count">{{ p.count }}</span>
+            </div>
+            <div class="hp-adash__pipe-track" aria-hidden="true">
+              <span
+                class="hp-adash__pipe-fill"
+                [class.hp-adash__pipe-fill--risk]="p.tone === 'risk'"
+                [style.width.%]="p.share * 100"
+              ></span>
+            </div>
+          </li>
+        }
+      </ul>
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-adash__bottom hp-shell-stagger" [attr.aria-label]="bottomSectionLabel()">
+    <hp-panel-card [title]="bottomLeftTitle()">
+      <ul class="hp-adash__stats" role="list">
+        @for (s of bottomLeftStats(); track s.label) {
+          <li class="hp-adash__stats-row">
+            <span class="hp-adash__stats-label">{{ s.label }}</span>
+            <span class="hp-adash__stats-value">{{ s.value }}</span>
+          </li>
+        }
+      </ul>
+    </hp-panel-card>
+
+    <hp-panel-card [title]="bottomRightTitle()">
+      <ul class="hp-adash__stats" role="list">
+        @for (s of bottomRightStats(); track s.label) {
+          <li class="hp-adash__stats-row">
+            <span class="hp-adash__stats-label">{{ s.label }}</span>
+            <span class="hp-adash__stats-value">{{ s.value }}</span>
+          </li>
+        }
+      </ul>
+    </hp-panel-card>
+  </section>
+</div>

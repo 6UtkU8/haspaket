@@ -1,0 +1,157 @@
+<div class="hp-acouriers hp-shell-page">
+  <section class="hp-acouriers__page-head" aria-label="Sayfa başlık alanı">
+    <h1 class="hp-acouriers__title">Kuryeler</h1>
+  </section>
+
+  <section class="hp-acouriers__tools" aria-label="Kurye filtreleri">
+    <input
+      type="search"
+      placeholder="Kurye veya sipariş ara"
+      [ngModel]="q()"
+      (ngModelChange)="q.set($event)"
+    />
+    <select [ngModel]="filter()" (ngModelChange)="filter.set($event)">
+      <option value="all">Tümü</option>
+      <option value="active">Aktif</option>
+      <option value="offline">Müsait değil</option>
+    </select>
+  </section>
+
+  <section aria-label="Kurye yükleri" class="hp-shell-stagger">
+    <hp-panel-card title="Kurye yük görünümü">
+      <div class="hp-acouriers__table-wrap">
+        <table class="hp-acouriers__table">
+          <thead>
+            <tr>
+              <th>Kurye</th>
+              <th>Durum</th>
+              <th>Aktif teslimat</th>
+              <th>Aktif siparişler</th>
+              <th>Durum değiştir</th>
+              <th>Detay</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of filtered(); track r.id) {
+              <tr>
+                <td>{{ r.name }}</td>
+                <td class="hp-acouriers__cell-status">
+                  <div class="hp-acouriers__status-stack">
+                    <span
+                      class="hp-acouriers__pill"
+                      [class.hp-acouriers__pill--online]="r.state === 'online' && !r.breakPending"
+                      [class.hp-acouriers__pill--offline]="r.state === 'offline'"
+                      [class.hp-acouriers__pill--break]="r.state === 'break' || r.breakPending"
+                    >
+                      {{ stateLabel(r.state) }}
+                    </span>
+                    @if (r.breakPending) {
+                      <span class="hp-acouriers__count-badge">Mola bekliyor</span>
+                    }
+                  </div>
+                </td>
+                <td class="hp-acouriers__cell-tasks">
+                  <span class="hp-acouriers__tasks-stack">
+                    <strong>{{ r.activeDeliveries }}</strong>
+                    <span class="hp-acouriers__count-badge hp-acouriers__count-badge--task">görev</span>
+                  </span>
+                </td>
+                <td class="hp-acouriers__cell-orders">{{ r.currentOrders }}</td>
+                <td class="hp-acouriers__cell-state-select">
+                  <select
+                    class="hp-acouriers__state-select"
+                    [ngModel]="r.state"
+                    (ngModelChange)="setCourierState(r.id, $event)"
+                  >
+                    <option value="online">Çevrimiçi</option>
+                    <option value="offline">Çevrimdışı</option>
+                    <option value="break">Mola</option>
+                  </select>
+                </td>
+                <td class="hp-acouriers__cell-detail">
+                  <a class="hp-acouriers__detail-link" [routerLink]="['/admin/kuryeler', r.id]">Detay</a>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="hp-acouriers__empty">
+                  <div class="hp-acouriers__empty-state">
+                    <span class="hp-acouriers__empty-icon" aria-hidden="true">-</span>
+                    <p>Filtreye uygun kurye yok.</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </hp-panel-card>
+  </section>
+
+  <section aria-label="Durum talepleri">
+    <hp-panel-card title="Durum Talepleri">
+      <div class="hp-acouriers__requests">
+        <div class="hp-acouriers__requests-head">
+          <h3>Bekleyen talepler</h3>
+          <span class="hp-acouriers__count-badge">{{ pendingStateRequests().length }}</span>
+        </div>
+        @if (pendingStateRequests().length) {
+          <div class="hp-acouriers__table-wrap">
+            <table class="hp-acouriers__table hp-acouriers__table--compact">
+              <thead>
+                <tr>
+                  <th>Kurye adı</th>
+                  <th>İstenen durum</th>
+                  <th>Detay</th>
+                  <th>Talep zamanı</th>
+                  <th>Mevcut durum</th>
+                  <th>Aksiyon</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (request of pendingStateRequests(); track request.id) {
+                  <tr>
+                    <td>{{ courierName(request.courierId) }}</td>
+                    <td>{{ requestLabel(request.requestedState) }}</td>
+                    <td>{{ requestMeta(request) }}</td>
+                    <td>{{ request.requestedAtMs | date: 'HH:mm' }}</td>
+                    <td>
+                      <span class="hp-acouriers__count-badge">{{ requestCurrentStatus(request.courierId) }}</span>
+                    </td>
+                    <td>
+                      <div class="hp-acouriers__request-actions">
+                        <button type="button" class="hp-acouriers__btn hp-acouriers__btn--approve" (click)="approveBreak(request.id)">Onayla</button>
+                        <button type="button" class="hp-acouriers__btn hp-acouriers__btn--reject" (click)="rejectBreak(request.id)">Reddet</button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <p class="hp-acouriers__empty hp-acouriers__empty--compact">Bekleyen durum talebi yok.</p>
+        }
+
+        <div class="hp-acouriers__requests-divider"></div>
+
+        <div class="hp-acouriers__requests-head">
+          <h3>Son bildirimler</h3>
+        </div>
+        @if (recentStateNotifications().length) {
+          <ul class="hp-acouriers__notif-list hp-acouriers__notif-list--compact" role="list">
+            @for (item of recentStateNotifications(); track item.id) {
+              <li>
+                <strong>{{ item.courierName }}</strong>
+                <p>{{ item.message }}</p>
+                <span>{{ item.createdAtMs | date: 'HH:mm' }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="hp-acouriers__empty hp-acouriers__empty--compact">Yeni durum bildirimi yok.</p>
+        }
+      </div>
+    </hp-panel-card>
+  </section>
+</div>

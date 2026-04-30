@@ -1,0 +1,131 @@
+<div class="hp-afdetail hp-shell-page">
+  <section aria-label="Firma detay başlığı">
+    <hp-panel-card>
+      @if (company(); as firma) {
+        <div class="hp-afdetail__head">
+          <div>
+            <h1>{{ firma.name }}</h1>
+          </div>
+          <span class="hp-afdetail__badge" [class.hp-afdetail__badge--passive]="!isActive()">
+            {{ isActive() ? 'Aktif' : 'Pasif' }}
+          </span>
+        </div>
+      } @else {
+        <p class="hp-afdetail__empty">Firma kaydı bulunamadı.</p>
+      }
+    </hp-panel-card>
+  </section>
+
+  @if (company(); as firma) {
+    <section aria-label="Sekmeler">
+      <hp-panel-card>
+        <div class="hp-afdetail__tabs">
+          <button type="button" [class.hp-afdetail__tab--active]="activeTab() === 'genel'" (click)="setTab('genel')">
+            Genel Bilgiler
+          </button>
+          <button
+            type="button"
+            [class.hp-afdetail__tab--active]="activeTab() === 'siparis'"
+            (click)="setTab('siparis')"
+          >
+            Sipariş Özeti
+          </button>
+          <button
+            type="button"
+            [class.hp-afdetail__tab--active]="activeTab() === 'kuryeler'"
+            (click)="setTab('kuryeler')"
+          >
+            Kuryeler
+          </button>
+        </div>
+      </hp-panel-card>
+    </section>
+
+    <section class="hp-afdetail__content hp-shell-stagger" aria-label="Detay içeriği">
+      @if (activeTab() === 'genel') {
+        <hp-panel-card title="Genel Bilgiler">
+          <div class="hp-afdetail__grid">
+            <div class="hp-afdetail__row"><span>Adres</span><strong>{{ firma.address }}</strong></div>
+            <div class="hp-afdetail__row"><span>Telefon</span><strong>{{ firma.phone }}</strong></div>
+            <div class="hp-afdetail__row"><span>Yetkili</span><strong>Operasyon Yetkilisi</strong></div>
+          </div>
+        </hp-panel-card>
+
+        <hp-panel-card title="Durum değiştir">
+          <p class="hp-afdetail__status-hint">
+            Liste üzerinden onaylanmış kararlardan sonra durumu buradan tekrar değiştirebilirsiniz.
+          </p>
+          <div class="hp-afdetail__status-actions">
+            <button
+              type="button"
+              class="hp-afdetail__status-btn"
+              [disabled]="isActive()"
+              (click)="requestDetailStatusChange(true)"
+            >
+              Aktif Yap
+            </button>
+            <button
+              type="button"
+              class="hp-afdetail__status-btn hp-afdetail__status-btn--danger"
+              [disabled]="!isActive()"
+              (click)="requestDetailStatusChange(false)"
+            >
+              Pasif Yap
+            </button>
+          </div>
+        </hp-panel-card>
+      }
+
+      @if (activeTab() === 'siparis') {
+        <hp-panel-card title="Sipariş Özeti">
+          <div class="hp-afdetail__summary">
+            <div><span>Toplam</span><strong>{{ orderSummary().total }}</strong></div>
+            <div><span>Aktif</span><strong>{{ orderSummary().active }}</strong></div>
+            <div><span>Teslim</span><strong>{{ orderSummary().delivered }}</strong></div>
+            <div><span>İptal Edildi</span><strong>{{ orderSummary().cancelled }}</strong></div>
+          </div>
+        </hp-panel-card>
+      }
+
+      @if (activeTab() === 'kuryeler') {
+        <hp-panel-card title="Kurye Önizleme">
+          <ul class="hp-afdetail__couriers">
+            @for (courier of courierPreview(); track courier.id) {
+              <li>
+                <span>{{ courier.name }}</span>
+                <span class="hp-afdetail__mini-badge" [class.hp-afdetail__mini-badge--passive]="courier.status === 'Pasif'">
+                  {{ courier.status }}
+                </span>
+              </li>
+            } @empty {
+              <li>Kurye verisi yok.</li>
+            }
+          </ul>
+        </hp-panel-card>
+      }
+    </section>
+  }
+</div>
+
+@if (detailConfirm(); as dc) {
+  <div class="hp-fconfirm-layer" role="presentation" (click)="closeDetailConfirm()">
+    <div
+      class="hp-fconfirm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hp-firm-detail-confirm-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="hp-firm-detail-confirm-title" class="hp-fconfirm__title">Firma durumunu değiştirmek istiyor musunuz?</h2>
+      <p class="hp-fconfirm__text">
+        @if (company(); as fr) {
+          <strong>{{ fr.name }}</strong> firması {{ dc.targetActive ? 'Aktif' : 'Pasif' }} yapılacak.
+        }
+      </p>
+      <div class="hp-fconfirm__actions">
+        <button type="button" class="hp-fconfirm__btn hp-fconfirm__btn--ghost" (click)="closeDetailConfirm()">Vazgeç</button>
+        <button type="button" class="hp-fconfirm__btn hp-fconfirm__btn--primary" (click)="applyDetailConfirm()">Onayla</button>
+      </div>
+    </div>
+  </div>
+}

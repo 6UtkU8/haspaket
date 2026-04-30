@@ -1,0 +1,42 @@
+<main class="hp-application">
+  <section class="hp-application__card">
+    <h1>Firma Başvuru Formu</h1>
+    <p>Firma kaydi icin gerekli bilgileri doldurun.</p>
+
+    <form #form="ngForm" (ngSubmit)="submit()" class="hp-application__form">
+      <label>
+        <span>Firma adi</span>
+        <input
+          name="companyName"
+          required
+          [ngModel]="companyName()"
+          (ngModelChange)="companyName.set($event)"
+        />
+      </label>
+      <label>
+        <span>Adres</span>
+        <input name="address" required [ngModel]="address()" (ngModelChange)="address.set($event)" />
+      </label>
+      <label>
+        <span>Yetkili kisi</span>
+        <input
+          name="contactPerson"
+          required
+          [ngModel]="contactPerson()"
+          (ngModelChange)="contactPerson.set($event)"
+        />
+      </label>
+      <label>
+        <span>Telefon</span>
+        <input name="phone" required [ngModel]="phone()" (ngModelChange)="phone.set($event)" />
+      </label>
+
+      <button type="submit" [disabled]="form.invalid">Başvuruyu Gonder</button>
+      @if (successMessage()) {
+        <p class="hp-application__success">{{ successMessage() }}</p>
+      }
+    </form>
+
+    <a routerLink="/" class="hp-application__back">Anasayfaya don</a>
+  </section>
+</main>

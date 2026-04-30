@@ -1,0 +1,23 @@
+/**
+ * Kurye paneli içi tek tipografi (yalnızca .hp-courier altı; admin/firma etkilenmez).
+ */
+
+.hp-courier__content {
+  font-size: var(--hp-panel-body-md);
+  line-height: var(--lh-body);
+}
+
+.hp-courier hp-panel-card .hp-pcard__title {
+  font-size: var(--hp-panel-pcard-title);
+  line-height: var(--lh-title);
+}
+
+.hp-courier hp-kpi-card .hp-kpi__label {
+  font-size: var(--hp-panel-kpi-label);
+  line-height: var(--lh-body);
+}
+
+.hp-courier hp-kpi-card .hp-kpi__hint {
+  font-size: var(--hp-panel-kpi-hint);
+  line-height: var(--lh-body);
+}

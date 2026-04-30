@@ -1,0 +1,66 @@
+<div class="hp-ctdetail hp-shell-page">
+  <section aria-label="Görev başlık alanı">
+    <hp-panel-card>
+      @if (order(); as o) {
+        <div class="hp-ctdetail__head">
+          <div>
+            <h1>{{ o.id }}</h1>
+          </div>
+          <span class="hp-ctdetail__badge">{{ ops.statusLabel(o.status) }}</span>
+        </div>
+      } @else {
+        <p class="hp-ctdetail__empty">Görev bulunamadı.</p>
+      }
+    </hp-panel-card>
+  </section>
+
+  @if (order(); as o) {
+    <section class="hp-ctdetail__grid hp-shell-stagger" aria-label="Görev detay bölümleri">
+      <hp-panel-card title="Adres">
+        <div class="hp-ctdetail__row"><span>Rota</span><strong>{{ o.from }} → {{ o.to }}</strong></div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Müşteri Bilgisi">
+        <div class="hp-ctdetail__row"><span>Müşteri</span><strong>{{ o.customer }}</strong></div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Süre">
+        <div class="hp-ctdetail__row"><span>Geçen Süre</span><strong>{{ ops.elapsedFor(o) }}</strong></div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Aksiyonlar">
+        <div class="hp-ctdetail__actions">
+          <button type="button" (click)="actionMock('Paketi Aldım')">Paketi Aldım</button>
+          <button type="button" (click)="actionMock('Yola Çıktım')">Yola Çıktım</button>
+          <button type="button" (click)="actionMock('Teslim Ettim')">Teslim Ettim</button>
+        </div>
+        @if (infoMessage()) {
+          <p class="hp-ctdetail__hint">{{ infoMessage() }}</p>
+        }
+      </hp-panel-card>
+    </section>
+
+    <section aria-label="Zaman çizelgesi">
+      <hp-panel-card title="Zaman çizelgesi">
+        @if (o.timeline.length) {
+          <ul class="hp-ctdetail__timeline">
+            @for (ev of o.timeline; track ev.id) {
+              <li>
+                <div class="hp-ctdetail__timeline-top">
+                  <strong>{{ ev.label }}</strong>
+                  <span>{{ ops.statusLabel(ev.type) }}</span>
+                </div>
+                <div class="hp-ctdetail__timeline-bottom">
+                  <span>{{ ev.actor }}</span>
+                  <span>{{ ev.atMs | date: 'dd.MM.yyyy HH:mm' }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="hp-ctdetail__empty">Zaman çizelgesi kaydı yok.</p>
+        }
+      </hp-panel-card>
+    </section>
+  }
+</div>

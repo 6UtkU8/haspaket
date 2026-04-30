@@ -1,0 +1,135 @@
+/**
+ * Panel fluid responsive scale — typography, icon, spacing, shell, cards.
+ * Breakpoint ref: ~390 base, 768, 1024, 1280, 1440, 1600+ (content-max steps).
+ * Tema renkleri değişmez; yalnızca ölçü/oran.
+ */
+
+:root {
+  /* —— Genel layout —— */
+  --hp-pad-x: clamp(1rem, 2.2vw + 0.45rem, 2.85rem);
+  --hp-content-max: 72rem;
+  --hp-auth-shell-max: min(92rem, calc(100vw - 2 * var(--hp-pad-x)));
+
+  /* —— Shell —— */
+  --hp-panel-sidebar-w: clamp(14rem, 10vw + 11rem, 21rem);
+  --hp-panel-logo-h: clamp(2.1rem, 1.35vw + 1.65rem, 3.2rem);
+  --hp-panel-nav-font: clamp(0.8125rem, 0.22vw + 0.74rem, 1rem);
+  --hp-panel-nav-icon: clamp(1.125rem, 0.5vw + 0.95rem, 1.45rem);
+  --hp-panel-nav-pad-y: clamp(0.55rem, 0.4vw + 0.42rem, 0.82rem);
+  --hp-panel-nav-pad-x: clamp(0.58rem, 0.45vw + 0.45rem, 0.95rem);
+  --hp-panel-nav-gap: clamp(0.45rem, 0.35vw + 0.32rem, 0.7rem);
+  --hp-panel-sidebar-pad: clamp(1rem, 1.35vw + 0.6rem, 1.55rem);
+  --hp-panel-sidebar-gap: clamp(0.85rem, 1vw + 0.55rem, 1.25rem);
+  --hp-panel-sidebar-cta-font: clamp(0.8125rem, 0.2vw + 0.76rem, 0.9375rem);
+  --hp-panel-sidebar-cta-pad: clamp(0.5rem, 0.35vw + 0.38rem, 0.75rem)
+    clamp(0.65rem, 0.45vw + 0.48rem, 0.95rem);
+
+  --hp-panel-header-h: clamp(4rem, 1.4vw + 3.2rem, 5.35rem);
+  --hp-navbar-height: var(--hp-panel-header-h);
+  --hp-panel-header-pad-y: clamp(0.55rem, 0.55vw + 0.35rem, 0.95rem);
+  --hp-panel-menu-btn: clamp(2.5rem, 0.85vw + 2.1rem, 3.15rem);
+  --hp-panel-menu-bar-w: clamp(1.05rem, 0.35vw + 0.95rem, 1.3rem);
+
+  --hp-panel-user-avatar: clamp(2.05rem, 0.75vw + 1.75rem, 2.85rem);
+  --hp-panel-user-name: clamp(0.78rem, 0.2vw + 0.72rem, 0.9375rem);
+  --hp-panel-user-email: clamp(0.65rem, 0.14vw + 0.58rem, 0.8125rem);
+  --hp-panel-user-avatar-font: clamp(0.78rem, 0.22vw + 0.7rem, 0.95rem);
+
+  --hp-panel-icon-btn: clamp(2.4rem, 0.75vw + 2.05rem, 3rem);
+  --hp-panel-header-cta-font: clamp(0.8125rem, 0.22vw + 0.76rem, 0.9375rem);
+  --hp-panel-header-cta-pad-y: clamp(0.48rem, 0.35vw + 0.38rem, 0.68rem);
+  --hp-panel-header-cta-pad-x: clamp(0.85rem, 0.55vw + 0.65rem, 1.25rem);
+
+  /* —— Sayfa / dashboard —— */
+  --hp-panel-page-gap: clamp(1.1rem, 2.4vw + 0.55rem, 2.35rem);
+  --hp-panel-gap-kpi: clamp(0.8rem, 1.6vw + 0.45rem, 1.4rem);
+  --hp-panel-gap-section: clamp(0.85rem, 1.35vw + 0.55rem, 1.35rem);
+  --hp-panel-content-pad-top: clamp(1rem, 2.4vw + 0.55rem, 1.85rem);
+  --hp-panel-content-pad-bottom: clamp(1.5rem, 2.2vw + 1rem, 2.65rem);
+
+  /* —— KPI —— */
+  --hp-panel-kpi-pad: clamp(1rem, 1.5vw + 0.6rem, 1.7rem);
+  --hp-panel-kpi-label: clamp(0.6875rem, 0.16vw + 0.62rem, 0.8125rem);
+  --hp-panel-kpi-value: clamp(1.45rem, 2.6vw + 0.75rem, 2.55rem);
+  --hp-panel-kpi-icon-box: clamp(2rem, 1.15vw + 1.65rem, 2.9rem);
+  --hp-panel-kpi-icon-svg: clamp(1.05rem, 0.4vw + 0.9rem, 1.38rem);
+  --hp-panel-kpi-hint: clamp(0.75rem, 0.22vw + 0.66rem, 0.9375rem);
+  --hp-panel-kpi-gap: clamp(0.3rem, 0.35vw + 0.2rem, 0.5rem);
+
+  /* —— Panel kart —— */
+  --hp-panel-pcard-head-px: clamp(1rem, 1.35vw + 0.7rem, 1.45rem);
+  --hp-panel-pcard-head-py: clamp(0.85rem, 1.05vw + 0.55rem, 1.3rem);
+  --hp-panel-pcard-body-px: clamp(1rem, 1.25vw + 0.72rem, 1.42rem);
+  --hp-panel-pcard-body-py: clamp(0.9rem, 1.05vw + 0.55rem, 1.3rem);
+  --hp-panel-pcard-title: clamp(0.875rem, 0.3vw + 0.76rem, 1.0625rem);
+
+  /* —— Form / drawer —— */
+  --hp-panel-field-gap: clamp(0.35rem, 0.3vw + 0.25rem, 0.5rem);
+  --hp-panel-field-label: clamp(0.75rem, 0.18vw + 0.68rem, 0.875rem);
+  --hp-panel-input-font: clamp(0.8125rem, 0.22vw + 0.74rem, 0.9375rem);
+  --hp-panel-input-pad-y: clamp(0.48rem, 0.35vw + 0.38rem, 0.72rem);
+  --hp-panel-input-pad-x: clamp(0.58rem, 0.45vw + 0.42rem, 0.88rem);
+
+  /* —— Tablo / rozet —— */
+  --hp-panel-table-font: clamp(0.8125rem, 0.22vw + 0.76rem, 0.9375rem);
+  --hp-panel-table-th: clamp(0.625rem, 0.14vw + 0.56rem, 0.75rem);
+  --hp-panel-body-sm: clamp(0.8125rem, 0.2vw + 0.76rem, 0.9375rem);
+  --hp-panel-body-md: clamp(0.875rem, 0.22vw + 0.8rem, 1.02rem);
+  --hp-panel-caption: clamp(0.6875rem, 0.16vw + 0.62rem, 0.8125rem);
+  --hp-panel-page-title: clamp(1rem, 0.34vw + 0.92rem, 1.15rem);
+  --hp-panel-section-title: clamp(0.9375rem, 0.28vw + 0.85rem, 1.05rem);
+  --hp-panel-badge-font: clamp(0.625rem, 0.12vw + 0.56rem, 0.75rem);
+  --hp-panel-badge-pad-y: clamp(0.2rem, 0.2vw + 0.12rem, 0.32rem);
+  --hp-panel-badge-pad-x: clamp(0.45rem, 0.35vw + 0.35rem, 0.65rem);
+
+  /* —— Harita bloğu —— */
+  --hp-panel-map-h: clamp(12.5rem, min(32vw + 6rem, 48vh), 28rem);
+  --hp-panel-map-gap: clamp(0.65rem, 1vw + 0.4rem, 1rem);
+  --hp-panel-legend-font: clamp(0.7rem, 0.18vw + 0.64rem, 0.8125rem);
+
+  /* —— Çıkış —— */
+  --hp-panel-logout-font: clamp(0.75rem, 0.16vw + 0.68rem, 0.875rem);
+  --hp-panel-logout-pad-y: clamp(0.48rem, 0.28vw + 0.35rem, 0.68rem);
+  --hp-panel-logout-pad-x: clamp(0.58rem, 0.35vw + 0.45rem, 0.88rem);
+
+  /* Drawer */
+  --hp-panel-drawer-title: clamp(1rem, 0.4vw + 0.88rem, 1.28rem);
+  --hp-panel-drawer-pad: clamp(0.9rem, 1.1vw + 0.55rem, 1.25rem);
+}
+
+/* İçerik genişliği — geniş ekranda daha fazla tuval */
+@media (min-width: 1024px) {
+  :root {
+    --hp-content-max: 76rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --hp-content-max: 80rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --hp-content-max: 84rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --hp-content-max: 88rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  :root {
+    --hp-auth-shell-max: min(100rem, calc(100vw - 2 * var(--hp-pad-x)));
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --hp-content-max: 92rem;
+  }
+}

@@ -1,0 +1,48 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Drawer / modal açıldığında scrollbar kaybı için layout shift azaltır (padding telafisi ile birlikte) */
+  scrollbar-gutter: stable;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--hp-font-body);
+  background: var(--hp-body-gradient);
+  background-color: var(--hp-color-bg);
+  color: var(--hp-color-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body {
+    transition:
+      background-color 0.22s var(--hp-ease-out),
+      color 0.18s var(--hp-ease-out);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+}
+
+.placeholder-card {
+  margin: 2rem;
+  padding: 1.25rem;
+  border-radius: var(--hp-radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--hp-color-surface);
+  box-shadow: var(--hp-shadow-card), var(--hp-glow-primary);
+}

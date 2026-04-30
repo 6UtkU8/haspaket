@@ -1,0 +1,160 @@
+<div class="hp-cpkg hp-shell-page">
+  <section class="hp-cpkg__page-head" aria-label="Paketler">
+    <h1 class="hp-cpkg__title">Paket geçmişi</h1>
+    <p class="hp-cpkg__lead">Teslim edilen paketler — güne göre filtreleyin.</p>
+  </section>
+
+  <section class="hp-cpkg__toolbar" aria-label="Tarih seçimi">
+    <label class="hp-cpkg__date-field">
+      <span>Tarih</span>
+      <input
+        type="date"
+        class="hp-cpkg__date-input"
+        [ngModel]="selectedDay()"
+        (ngModelChange)="setDayFromInput($event)"
+      />
+    </label>
+  </section>
+
+  <section class="hp-cpkg__grid hp-shell-stagger" aria-label="Teslim edilen paketler">
+    @if (deliveredForDay().length === 0) {
+      <hp-panel-card title="Bu gün için kayıt yok">
+        <p class="hp-cpkg__empty">Seçilen tarihte teslim edilmiş paket bulunmuyor.</p>
+      </hp-panel-card>
+    } @else {
+      @for (order of deliveredForDay(); track order.id) {
+        @let t = timing(order);
+        <article class="hp-cpkg__card">
+          <div class="hp-cpkg__card-head">
+            <span class="hp-cpkg__pkg-id">{{ order.id }}</span>
+            <span class="hp-cpkg__status">{{ ops.statusLabel(order.status) }}</span>
+          </div>
+          <dl class="hp-cpkg__dl">
+            <dt>Firma</dt>
+            <dd>{{ order.from }}</dd>
+            <dt>Müşteri</dt>
+            <dd>{{ order.customer }}</dd>
+            <dt class="hp-cpkg__dt-full">Hazır</dt>
+            <dd class="hp-cpkg__dd-full">{{ ops.orderReadyAtMs(order) | date: 'dd.MM.yyyy HH:mm' }}</dd>
+            <dt class="hp-cpkg__dt-full">Adres</dt>
+            <dd class="hp-cpkg__addr hp-cpkg__dd-full">{{ order.from }} → {{ order.to }}</dd>
+            <dt>Tutar</dt>
+            <dd>{{ formatTry(ops.receiptAmount(order.id)) }}</dd>
+            <dt>Ödeme</dt>
+            <dd>{{ ops.paymentDisplayLabel(order) }}</dd>
+          </dl>
+          @if (hasDeliveryLegs(t)) {
+            <div class="hp-cpkg__legs" aria-label="Süre özeti">
+              @if (t.totalMin != null) {
+                <div class="hp-cpkg__leg">
+                  <span>Toplam süre</span>
+                  <strong>{{ minLabel(t.totalMin) }}</strong>
+                </div>
+              }
+              @if (t.createdToPickupMin != null) {
+                <div class="hp-cpkg__leg">
+                  <span>Oluşturma → Firmadayım</span>
+                  <strong>{{ minLabel(t.createdToPickupMin) }}</strong>
+                </div>
+              }
+              @if (t.firmToRoadMin != null) {
+                <div class="hp-cpkg__leg">
+                  <span>Firmadayım → Yola</span>
+                  <strong>{{ minLabel(t.firmToRoadMin) }}</strong>
+                </div>
+              }
+              @if (t.roadToDeliverMin != null) {
+                <div class="hp-cpkg__leg">
+                  <span>Yola → Teslim</span>
+                  <strong>{{ minLabel(t.roadToDeliverMin) }}</strong>
+                </div>
+              }
+            </div>
+          }
+          <div class="hp-cpkg__card-actions">
+            <button type="button" class="hp-cpkg__edit-btn" (click)="openEditModal(order.id)">Düzenle</button>
+          </div>
+        </article>
+      }
+    }
+  </section>
+</div>
+
+@if (editModalOrderId(); as orderId) {
+  <div class="hp-cpkg__modal-layer" (click)="closeEditModal()" role="presentation">
+    <section
+      class="hp-cpkg__modal hp-cpkg__modal--fis"
+      (click)="$event.stopPropagation()"
+      aria-labelledby="hp-cpkg-fis-title"
+      aria-modal="true"
+      role="dialog"
+    >
+      <header class="hp-cpkg__modal-head hp-cpkg__modal-head--fis">
+        <div class="hp-cpkg__modal-head-text">
+          <h3 id="hp-cpkg-fis-title">Fişi Güncelle</h3>
+          <p class="hp-cpkg__modal-lede">Fiyat ve ödeme tipini güncelleyebilirsin.</p>
+          <p class="hp-cpkg__fis-ref">{{ orderId }}</p>
+        </div>
+        <button type="button" class="hp-cpkg__modal-close" (click)="closeEditModal()" aria-label="Kapat">✕</button>
+      </header>
+      @if (editModalDeliverySummary(); as legs) {
+        @if (hasDeliveryLegs(legs)) {
+          <div class="hp-cpkg__fis-legs" aria-label="Teslim süre özeti">
+            @if (legs.totalMin != null) {
+              <div class="hp-cpkg__fis-leg">
+                <span>Toplam süre</span>
+                <strong>{{ minLabel(legs.totalMin) }}</strong>
+              </div>
+            }
+            @if (legs.createdToPickupMin != null) {
+              <div class="hp-cpkg__fis-leg">
+                <span>Oluşturma → Firmadayım</span>
+                <strong>{{ minLabel(legs.createdToPickupMin) }}</strong>
+              </div>
+            }
+            @if (legs.firmToRoadMin != null) {
+              <div class="hp-cpkg__fis-leg">
+                <span>Firmadayım → Yola</span>
+                <strong>{{ minLabel(legs.firmToRoadMin) }}</strong>
+              </div>
+            }
+            @if (legs.roadToDeliverMin != null) {
+              <div class="hp-cpkg__fis-leg">
+                <span>Yola → Teslim</span>
+                <strong>{{ minLabel(legs.roadToDeliverMin) }}</strong>
+              </div>
+            }
+          </div>
+        }
+      }
+      <div class="hp-cpkg__modal-body hp-cpkg__modal-body--fis">
+        <label class="hp-cpkg__field">
+          <span>Fiyat</span>
+          <input
+            type="number"
+            class="hp-cpkg__field-input"
+            inputmode="decimal"
+            min="0"
+            step="1"
+            [ngModel]="editPrice()"
+            (ngModelChange)="onEditPriceInput($event)"
+          />
+        </label>
+        <label class="hp-cpkg__field">
+          <span>Ödeme tipi</span>
+          <div class="hp-select-field-wrap">
+            <select class="hp-select-field" [ngModel]="editPaymentType()" (ngModelChange)="editPaymentType.set($event)">
+              @for (opt of paymentOptions; track opt) {
+                <option [ngValue]="opt">{{ opt }}</option>
+              }
+            </select>
+          </div>
+        </label>
+      </div>
+      <footer class="hp-cpkg__modal-actions hp-cpkg__modal-actions--fis">
+        <button type="button" class="hp-cpkg__btn-dismiss" (click)="closeEditModal()">Vazgeç</button>
+        <button type="button" class="hp-cpkg__btn-save" (click)="saveEditModal()">Kaydet</button>
+      </footer>
+    </section>
+  </div>
+}

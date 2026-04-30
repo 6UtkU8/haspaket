@@ -1,0 +1,49 @@
+<div class="hp-fcdetail hp-shell-page">
+  <section aria-label="Kurye başlık alanı">
+    <hp-panel-card>
+      @if (courier(); as c) {
+        <div class="hp-fcdetail__head">
+          <div>
+            <h1>{{ c.name }}</h1>
+          </div>
+          <span class="hp-fcdetail__badge" [class.hp-fcdetail__badge--passive]="!c.active">
+            {{ c.active ? 'Aktif' : 'Pasif' }}
+          </span>
+        </div>
+      } @else {
+        <p class="hp-fcdetail__empty">Kurye bulunamadı.</p>
+      }
+    </hp-panel-card>
+  </section>
+
+  @if (courier(); as c) {
+    <section class="hp-fcdetail__grid hp-shell-stagger" aria-label="Kurye detay içeriği">
+      <hp-panel-card title="Profil">
+        <div class="hp-fcdetail__rows">
+          <div class="hp-fcdetail__row"><span>Ad</span><strong>{{ c.name }}</strong></div>
+          <div class="hp-fcdetail__row"><span>Telefon</span><strong>{{ phone() }}</strong></div>
+          <div class="hp-fcdetail__row"><span>E-posta</span><strong>{{ c.loginIdentifier }}</strong></div>
+          <div class="hp-fcdetail__row"><span>Bölge</span><strong>{{ region() }}</strong></div>
+        </div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Aktif Görev Sayısı">
+        <div class="hp-fcdetail__count">
+          <span>{{ activeTaskCount() }}</span>
+          <p>Şu an atanmış aktif görev</p>
+        </div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Performans Özeti">
+        <div class="hp-fcdetail__badges">
+          @for (item of performanceBadges(); track item.label) {
+            <div class="hp-fcdetail__perf-row">
+              <span>{{ item.label }}</span>
+              <strong class="hp-fcdetail__mini-badge">{{ item.value }}</strong>
+            </div>
+          }
+        </div>
+      </hp-panel-card>
+    </section>
+  }
+</div>

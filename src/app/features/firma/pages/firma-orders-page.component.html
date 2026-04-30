@@ -1,0 +1,186 @@
+<div class="hp-forders hp-shell-page">
+  <section class="hp-forders__summary" aria-label="Sipariş özeti">
+    @for (s of summary(); track s.key) {
+      <hp-panel-card>
+        <div class="hp-forders__sum-label">{{ s.label }}</div>
+        <div class="hp-forders__sum-value">{{ s.value }}</div>
+      </hp-panel-card>
+    }
+  </section>
+
+  <section class="hp-forders__tools" aria-label="Filtreler">
+    <div class="hp-forders__search">
+      <input
+        type="search"
+        placeholder="Sipariş, müşteri, rota ara"
+        [ngModel]="q()"
+        (ngModelChange)="q.set($event)"
+      />
+    </div>
+    <div class="hp-forders__filter">
+      <select [ngModel]="status()" (ngModelChange)="status.set($event)">
+        <option value="all">Tümü</option>
+        <option value="yeni">Yeni</option>
+        <option value="hazirlaniyor">Hazırlanıyor</option>
+        <option value="alinacak">Kurye Atandı</option>
+        <option value="dagitimda">Yolda</option>
+        <option value="teslim-edildi">Teslim Edildi</option>
+        <option value="iptal">İptal</option>
+      </select>
+    </div>
+    <div class="hp-forders__new">
+      <a routerLink="/firma/siparisler/yeni">Yeni Sipariş</a>
+    </div>
+  </section>
+
+  @if (hasResult()) {
+    <section class="hp-forders__grid hp-shell-stagger" aria-label="Siparişler">
+      <hp-panel-card title="Sipariş listesi">
+        <p class="hp-forders__section-note">Liste solda, seçili siparişin detayı sağ panelde.</p>
+        <div class="hp-forders__table-wrap">
+          <table class="hp-forders__table">
+            <thead>
+              <tr>
+                <th>Sipariş</th>
+                <th>Müşteri</th>
+                <th>Durum</th>
+                <th>Kurye</th>
+                <th>Süre</th>
+                <th>Detay</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (o of filtered(); track o.id) {
+                <tr
+                  [class.hp-forders__row--active]="selectedOrder().id === o.id"
+                  (click)="setSelected(o.id)"
+                >
+                  <td>{{ o.id }}</td>
+                  <td>{{ o.customer }}</td>
+                  <td>
+                    <span class="hp-forders__badge" [class]="badgeClass(o)">{{ badgeLabel(o) }}</span>
+                  </td>
+                  <td>
+                    <span class="hp-forders__courier-stack">
+                      <span>{{ ops.courierName(o.assignedCourierId) }}</span>
+                      @if (
+                        o.assignedCourierId && ops.courierContactDisplay(o.assignedCourierId) !== '—'
+                      ) {
+                        @if (ops.courierContactTelHref(o.assignedCourierId); as tel) {
+                          <a class="hp-forders__courier-tel" [href]="tel" (click)="$event.stopPropagation()">{{
+                            ops.courierContactDisplay(o.assignedCourierId)
+                          }}</a>
+                        } @else {
+                          <span class="hp-forders__courier-tel-plain">{{
+                            ops.courierContactDisplay(o.assignedCourierId)
+                          }}</span>
+                        }
+                      }
+                    </span>
+                  </td>
+                  <td class="hp-forders__time">{{ ops.elapsedFor(o) }}</td>
+                  <td>
+                    <a
+                      class="hp-forders__detail-link"
+                      [routerLink]="['/firma/siparisler', o.id]"
+                      (click)="$event.stopPropagation()"
+                      >Detay</a
+                    >
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Detay (salt okunur)">
+        @if (selectedOrder(); as o) {
+          <div class="hp-forders__detail hp-forders__detail--focus">
+            <div class="hp-forders__detail-head">
+              <p class="hp-forders__detail-route"><strong>{{ o.id }}</strong> · {{ o.from }} → {{ o.to }}</p>
+              <span class="hp-forders__badge" [class]="badgeClass(o)">{{ badgeLabel(o) }}</span>
+            </div>
+
+            <div class="hp-forders__detail-grid">
+              <div class="hp-forders__detail-row">
+                <span class="hp-forders__detail-label">Durum</span>
+                <span class="hp-forders__detail-value">{{ badgeLabel(o) }}</span>
+              </div>
+              <div class="hp-forders__detail-row">
+                <span class="hp-forders__detail-label">Kurye</span>
+                <span class="hp-forders__detail-value">{{ ops.courierName(o.assignedCourierId) }}</span>
+              </div>
+              <div class="hp-forders__detail-row">
+                <span class="hp-forders__detail-label">Kurye iletişim</span>
+                <span class="hp-forders__detail-value hp-forders__detail-value--wrap">
+                  @if (
+                    !o.assignedCourierId ||
+                    ops.courierContactDisplay(o.assignedCourierId) === '—'
+                  ) {
+                    —
+                  } @else {
+                    @if (ops.courierContactTelHref(o.assignedCourierId); as tel) {
+                      <a [href]="tel">{{ ops.courierContactDisplay(o.assignedCourierId) }}</a>
+                    } @else {
+                      {{ ops.courierContactDisplay(o.assignedCourierId) }}
+                    }
+                  }
+                </span>
+              </div>
+              <div class="hp-forders__detail-row">
+                <span class="hp-forders__detail-label">Ödeme metodu</span>
+                <span class="hp-forders__detail-value">{{ ops.paymentDisplayLabel(o) }}</span>
+              </div>
+              <div class="hp-forders__detail-row">
+                <span class="hp-forders__detail-label">Geçen süre</span>
+                <span class="hp-forders__detail-value hp-forders__time">{{ ops.elapsedFor(o) }}</span>
+              </div>
+            </div>
+
+            <h4 class="hp-forders__timeline-title">Zaman çizelgesi</h4>
+            <ul class="hp-forders__timeline" role="list">
+              @for (ev of o.timeline; track ev.id) {
+                <li>
+                  <div class="hp-forders__timeline-top">
+                    <strong>{{ ev.label }}</strong>
+                    <span class="hp-forders__timeline-status">{{ timelineStatusLabel(ev) }}</span>
+                  </div>
+                  <div class="hp-forders__timeline-meta">
+                    <span>{{ ev.actor }}</span>
+                    <span>{{ ev.atMs | date: 'HH:mm' }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+
+            <div class="hp-forders__cancel-row">
+              <button
+                type="button"
+                class="hp-forders__cancel"
+                [disabled]="!firmCancelState().ok"
+                [class.hp-forders__cancel--muted]="!firmCancelState().ok"
+                (click)="$event.stopPropagation(); requestCancelSelected()"
+              >
+                Siparişi iptal et
+              </button>
+              @if (!firmCancelState().ok && firmCancelState().reason) {
+                <p class="hp-forders__cancel-hint">{{ firmCancelState().reason }}</p>
+              }
+            </div>
+          </div>
+        }
+      </hp-panel-card>
+    </section>
+  } @else {
+    <hp-panel-card>
+      <div class="hp-forders__empty-state">
+        <span class="hp-forders__empty-icon" aria-hidden="true">📦</span>
+        <div>
+          <p class="hp-forders__empty">Filtrelere uygun sipariş bulunamadı.</p>
+          <p class="hp-forders__empty-sub">Filtreyi değiştirerek veya yeni sipariş bekleyerek devam edin.</p>
+        </div>
+      </div>
+    </hp-panel-card>
+  }
+</div>

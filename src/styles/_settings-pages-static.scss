@@ -1,0 +1,32 @@
+/**
+ * Courier / Firma Ayarlar: ağır/layout etkileyen geçişleri sınırla; sayfa girişi `hp-shell-*` ile uyumlu kalsın.
+ */
+
+.hp-courier__content .courier-settings-page,
+.hp-firma__content .firma-settings-page {
+  contain: layout paint;
+}
+
+.hp-courier__content .courier-settings-page *,
+.hp-firma__content .firma-settings-page * {
+  transition-property: background-color, color, border-color, box-shadow, opacity !important;
+}
+.hp-firma__content .firma-settings-page .hp-pcard:hover,
+.hp-firma__content .firma-settings-page .hp-feature-card:hover {
+  transform: none !important;
+}
+
+/* Pre-seed hp-pcard values so lazy-loaded component styles produce no visual change */
+.hp-courier__content .courier-settings-page .hp-pcard,
+.hp-firma__content .firma-settings-page .hp-pcard {
+  background: color-mix(in srgb, var(--hp-color-surface) 92%, transparent);
+  border: 1px solid var(--hp-color-border);
+  border-radius: clamp(12px, 2vw, 16px);
+}
+
+/* Pre-seed courier settings section backgrounds */
+.hp-courier__content .courier-settings-page .hp-csettings__section {
+  background: color-mix(in srgb, var(--hp-color-surface) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--hp-color-border) 82%, transparent);
+  border-radius: var(--hp-radius-md);
+}

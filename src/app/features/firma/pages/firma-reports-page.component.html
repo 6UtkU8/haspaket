@@ -1,0 +1,55 @@
+<div class="hp-freports hp-shell-page">
+  <section aria-label="Dönem seçimi">
+    <hp-panel-card title="Dönem">
+      <div class="hp-freports__period">
+        <button type="button" [class.hp-freports__period-btn--active]="period() === 'gunluk'" (click)="setPeriod('gunluk')">
+          Günlük
+        </button>
+        <button
+          type="button"
+          [class.hp-freports__period-btn--active]="period() === 'haftalik'"
+          (click)="setPeriod('haftalik')"
+        >
+          Haftalık
+        </button>
+        <button type="button" [class.hp-freports__period-btn--active]="period() === 'aylik'" (click)="setPeriod('aylik')">
+          Aylık
+        </button>
+      </div>
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-freports__kpis" aria-label="Rapor KPI">
+    @for (k of kpis(); track k.key) {
+      <hp-panel-card>
+        <p class="hp-freports__kpi-label">{{ k.label }}</p>
+        <p class="hp-freports__kpi-value">{{ k.value }}</p>
+      </hp-panel-card>
+    }
+  </section>
+
+  <section class="hp-freports__grid hp-shell-stagger" aria-label="Rapor detayları">
+    <hp-panel-card title="Sipariş dağılımı">
+      <ul class="hp-freports__list" role="list">
+        @for (row of statusBreakdown(); track row.label) {
+          <li class="hp-freports__row">
+            <span>{{ row.label }}</span>
+            <strong>{{ row.count }}</strong>
+          </li>
+        }
+      </ul>
+    </hp-panel-card>
+
+    <hp-panel-card title="Trend özeti (mock chart)">
+      <div class="hp-freports__chart">
+        @for (bar of trendBars(); track bar.label) {
+          <div class="hp-freports__bar-col">
+            <div class="hp-freports__bar" [style.height.%]="bar.height"></div>
+            <span>{{ bar.label }}</span>
+          </div>
+        }
+      </div>
+      <p class="hp-freports__note">Seçili döneme göre örnek sipariş trendi gösterimi.</p>
+    </hp-panel-card>
+  </section>
+</div>

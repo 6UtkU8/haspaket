@@ -1,0 +1,116 @@
+<div class="hp-aodetail hp-shell-page">
+  <section aria-label="Sipariş detay başlığı">
+    <hp-panel-card>
+      @if (order(); as o) {
+        <div class="hp-aodetail__head">
+          <div>
+            <p class="hp-aodetail__crumb"><a routerLink="/admin/siparisler">Siparişler</a> / Detay</p>
+            <h1>{{ o.id }}</h1>
+          </div>
+          <span class="hp-aodetail__badge" [class]="statusClass(o.status)">{{ ops.statusLabel(o.status) }}</span>
+        </div>
+      } @else {
+        <p class="hp-aodetail__empty">Sipariş bulunamadı.</p>
+      }
+    </hp-panel-card>
+  </section>
+
+  @if (order(); as o) {
+    <section class="hp-aodetail__grid hp-shell-stagger" aria-label="Operasyon müdahalesi">
+      <hp-panel-card title="Tam müdahale">
+        @if (!canAdminCancelOrPatch()) {
+          <p class="hp-aodetail__hint">İptal edilmiş siparişte kayıt değişikliği yapılmaz.</p>
+        } @else {
+          <div class="hp-aodetail__inter-grid">
+            <label class="hp-aodetail__field"><span>Müşteri</span>
+              <input type="text" [ngModel]="patchCustomer()" (ngModelChange)="patchCustomer.set($event)" /></label>
+            <label class="hp-aodetail__field"><span>Telefon</span>
+              <input type="tel" [ngModel]="patchPhone()" (ngModelChange)="patchPhone.set($event)" /></label>
+            <label class="hp-aodetail__field hp-aodetail__field--full"><span>Çıkış</span>
+              <input type="text" [ngModel]="patchFrom()" (ngModelChange)="patchFrom.set($event)" /></label>
+            <label class="hp-aodetail__field hp-aodetail__field--full"><span>Teslimat</span>
+              <input type="text" [ngModel]="patchTo()" (ngModelChange)="patchTo.set($event)" /></label>
+            <label class="hp-aodetail__field"><span>Ücret (₺)</span>
+              <input inputmode="decimal" [ngModel]="patchFeeRaw()" (ngModelChange)="patchFeeRaw.set($event)"
+            /></label>
+          </div>
+          <p class="hp-aodetail__hint">{{ selectedZoneHints() }}</p>
+          <div class="hp-aodetail__btn-row">
+            <button type="button" class="hp-aodetail__btn hp-aodetail__btn--solid" (click)="applyPatches()">
+              Güncelle
+            </button>
+            <button type="button" class="hp-aodetail__btn" (click)="clearDeliveryFee()">Ücret kaldır</button>
+          </div>
+          <hr class="hp-aodetail__hr" />
+          <p class="hp-aodetail__hint"><strong>Otomatik atama önerisi:</strong> {{ suggestedCourierLabel() || '—' }}</p>
+          <div class="hp-aodetail__btn-row">
+            <button
+              type="button"
+              class="hp-aodetail__btn hp-aodetail__btn--accent"
+              (click)="assignByDistrictZone()"
+              [disabled]="o.status === 'iptal' || o.status === 'teslim-edildi'"
+            >
+              Bölgeye göre ata
+            </button>
+          </div>
+          <label class="hp-aodetail__field hp-aodetail__field--full"><span>İptal notu</span>
+            <input type="text" [ngModel]="cancelReason()" (ngModelChange)="cancelReason.set($event)" /></label>
+          <button type="button" class="hp-aodetail__btn hp-aodetail__btn--danger" (click)="cancelOrder()">
+            Siparişi iptal et
+          </button>
+        }
+      </hp-panel-card>
+
+      <hp-panel-card title="Kurye ata / devret">
+        <div class="hp-aodetail__rows">
+          <div class="hp-aodetail__row"><span>Kurye</span><strong>{{ ops.courierName(o.assignedCourierId) }}</strong></div>
+          <div class="hp-aodetail__row"><span>Aşama</span><strong>{{ ops.lifecycleLabel(o) }}</strong></div>
+          <div class="hp-aodetail__row"><span>Teslimat ücreti</span><strong>{{ o.deliveryFeeTry != null ? (o.deliveryFeeTry + ' ₺') : '—' }}</strong></div>
+        </div>
+        <div class="hp-aodetail__assign">
+          <label for="detail-courier">Kurye seç</label>
+          <div class="hp-aodetail__assign-row">
+            <select
+              id="detail-courier"
+              [ngModel]="selectedCourierId()"
+              (ngModelChange)="selectedCourierId.set($event)"
+              [disabled]="!canAdminReassign()"
+            >
+              <option value="">Kurye seçin</option>
+              @for (courier of couriers(); track courier.id) {
+                <option [value]="courier.id">{{ courier.name }}</option>
+              }
+            </select>
+            <button type="button" [disabled]="!selectedCourierId() || !canAdminReassign()" (click)="assignCourier()">
+              Ata
+            </button>
+          </div>
+          <p class="hp-aodetail__hint">{{ assignHint() }}</p>
+        </div>
+      </hp-panel-card>
+    </section>
+
+    <section aria-label="Zaman çizelgesi">
+      <hp-panel-card title="Zaman çizelgesi">
+        @if (o.timeline.length) {
+          <ul class="hp-aodetail__timeline">
+            @for (ev of o.timeline; track ev.id) {
+              <li>
+                <div class="hp-aodetail__timeline-top">
+                  <strong>{{ ev.label }}</strong>
+                  <span>{{ ops.statusLabel(ev.type) }}</span>
+                </div>
+                <div class="hp-aodetail__timeline-bottom">
+                  <span>{{ ev.actor }}</span>
+                  <span>{{ ev.atMs | date: 'dd.MM.yyyy HH:mm' }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="hp-aodetail__empty">Zaman çizelgesi kaydı bulunmuyor.</p>
+        }
+      </hp-panel-card>
+    </section>
+  }
+</div>

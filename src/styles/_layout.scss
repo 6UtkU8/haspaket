@@ -1,0 +1,61 @@
+/**
+ * HasPaket — ortak layout yardımcıları
+ * Yeni sayfalarda: section içi `hp-container` veya doğrudan `var(--hp-pad-x)` + `var(--hp-content-max)`.
+ */
+
+.hp-page {
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+.hp-container {
+  width: 100%;
+  max-width: var(--hp-content-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--hp-pad-x);
+  padding-right: var(--hp-pad-x);
+  box-sizing: border-box;
+}
+
+/* Login / geniş iki sütun düzenleri */
+.hp-container--auth {
+  max-width: var(--hp-auth-shell-max);
+}
+
+/* Dar okuma / formlar (isteğe bağlı) */
+.hp-container--narrow {
+  max-width: min(42rem, 100%);
+}
+
+/* Panel sayfa içi sütun — dashboard / liste sayfalarında ortak dikey ritim (opsiyonel sarmalayıcı) */
+.hp-shell-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hp-panel-page-gap);
+  width: 100%;
+  max-width: var(--hp-content-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Light mode — üst çubuk hafif cam (panel ailesi) */
+html.theme-light .hp-firma__header,
+html.theme-light .hp-admin__header,
+html.theme-light .hp-courier__header,
+html[data-theme='light'] .hp-firma__header,
+html[data-theme='light'] .hp-admin__header,
+html[data-theme='light'] .hp-courier__header {
+  backdrop-filter: blur(14px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-light .hp-firma__header,
+  html.theme-light .hp-admin__header,
+  html.theme-light .hp-courier__header,
+  html[data-theme='light'] .hp-firma__header,
+  html[data-theme='light'] .hp-admin__header,
+  html[data-theme='light'] .hp-courier__header {
+    backdrop-filter: none;
+  }
+}

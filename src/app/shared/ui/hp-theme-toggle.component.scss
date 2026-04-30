@@ -1,0 +1,56 @@
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.hp-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hp-panel-icon-btn);
+  height: var(--hp-panel-icon-btn);
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--hp-color-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-color-surface-soft);
+  color: var(--hp-color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    color var(--hp-transition-fast),
+    border-color var(--hp-transition-fast),
+    background var(--hp-transition-fast),
+    box-shadow var(--hp-transition-fast);
+}
+
+.hp-theme-toggle:hover {
+  color: var(--hp-color-text);
+  border-color: var(--hp-color-border-strong);
+  background: var(--hp-color-surface-elevated);
+}
+
+.hp-theme-toggle:focus-visible {
+  outline: 2px solid var(--hp-color-primary);
+  outline-offset: 2px;
+}
+
+:host-context(html.theme-light) .hp-theme-toggle,
+:host-context(html[data-theme='light']) .hp-theme-toggle {
+  box-shadow:
+    0 1px 2px rgba(28, 25, 23, 0.05),
+    0 3px 8px rgba(28, 25, 23, 0.06);
+}
+
+.hp-theme-toggle__ico {
+  width: clamp(1.05rem, 0.45vw + 0.92rem, 1.35rem);
+  height: clamp(1.05rem, 0.45vw + 0.92rem, 1.35rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-theme-toggle {
+    transition: none;
+  }
+}

@@ -1,0 +1,218 @@
+<div
+  class="hp-courier"
+  [class.hp-courier--sidebar-open]="sidebarOpen()"
+  [class.hp-courier--compact-tasks]="courierSettings.compactTasks()"
+>
+  <div class="hp-courier__backdrop" aria-hidden="true" (click)="closeSidebar()"></div>
+
+  <aside class="hp-courier__sidebar" aria-label="Kurye menüsü">
+    <div class="hp-courier__sidebar-head">
+      <a routerLink="/courier/dashboard" class="hp-courier__brand" (click)="closeSidebar()">
+        <hp-brand-logo
+          imgClass="hp-courier__logo"
+          [width]="168"
+          [height]="48"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+    </div>
+
+    <nav class="hp-courier__nav" aria-label="Ana menü">
+      @for (item of navItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="hp-courier__nav-link--active"
+          [routerLinkActiveOptions]="{ exact: item.path === '/courier/dashboard' || item.path === '/courier/paketler' }"
+          class="hp-courier__nav-link"
+          (click)="closeSidebar()"
+        >
+          @switch (item.icon) {
+            @case ('dash') {
+              <svg class="hp-courier__nav-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M4 13h6V4H4v9zm0 7h6v-5H4v5zm8 0h6V11h-6v9zm0-18v9h6V4h-6z"
+                />
+              </svg>
+            }
+            @case ('packages') {
+              <svg class="hp-courier__nav-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M21 16.5v-9l-9-5-9 5v9l9 4.5 9-4.5zM12 4.21l6.92 3.84L12 11.89 5.08 8.05 12 4.21zm-7 5.62 6 3.27v7.06l-6-3v-7.33zm14 7.33-6 3v-7.06l6-3.27v7.33z"
+                />
+              </svg>
+            }
+            @case ('pool') {
+              <svg class="hp-courier__nav-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M4 5h16v2H4V5zm2 4h12v2H6V9zm-2 4h16v2H4v-2zm2 4h12v2H6v-2z"
+                />
+              </svg>
+            }
+            @case ('reports') {
+              <svg class="hp-courier__nav-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M4 19h16v2H4v-2zm1-2h3V8H5v9zm5 0h3V4h-3v13zm5 0h3v-6h-3v6z"
+                />
+              </svg>
+            }
+            @case ('settings') {
+              <svg class="hp-courier__nav-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.07.63-.07.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                />
+              </svg>
+            }
+          }
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="hp-courier__sidebar-foot">
+      <button type="button" class="hp-shell-logout" (click)="logout()">Çıkış Yap</button>
+    </div>
+  </aside>
+
+  <div class="hp-courier__main">
+    <header class="hp-courier__header">
+      <button
+        type="button"
+        class="hp-courier__menu-btn"
+        aria-label="Menüyü aç veya kapat"
+        [attr.aria-expanded]="sidebarOpen()"
+        (click)="toggleSidebar()"
+      >
+        <span class="hp-courier__menu-bar" aria-hidden="true"></span>
+        <span class="hp-courier__menu-bar" aria-hidden="true"></span>
+        <span class="hp-courier__menu-bar" aria-hidden="true"></span>
+      </button>
+
+      <div class="hp-courier__header-spacer" aria-hidden="true"></div>
+
+      <div class="hp-courier__state-wrap">
+        <div
+          class="hp-courier__state-segment"
+          [style.--state-index]="stateIndex()"
+          [attr.data-state]="stateTone()"
+          role="tablist"
+          aria-label="Kurye durum seçici"
+        >
+          <span class="hp-courier__state-indicator" aria-hidden="true"></span>
+          <button
+            type="button"
+            class="hp-courier__state-btn"
+            data-segment="online"
+            role="tab"
+            [class.hp-courier__state-btn--active]="courierState() === 'online'"
+            [attr.aria-selected]="courierState() === 'online'"
+            (click)="setState('online')"
+          >
+            <span class="hp-courier__state-btn-inner">
+              <svg class="hp-courier__state-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M13 2 3 14h8l-1 8 10-12h-8l1-8z" />
+              </svg>
+              <span class="hp-courier__state-label">Çevrimiçi</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="hp-courier__state-btn"
+            data-segment="offline"
+            role="tab"
+            [class.hp-courier__state-btn--active]="courierState() === 'offline'"
+            [attr.aria-selected]="courierState() === 'offline'"
+            (click)="setState('offline')"
+          >
+            <span class="hp-courier__state-btn-inner">
+              <svg class="hp-courier__state-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"
+                />
+              </svg>
+              <span class="hp-courier__state-label">Çevrimdışı</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="hp-courier__state-btn"
+            data-segment="break"
+            role="tab"
+            [class.hp-courier__state-btn--active]="courierState() === 'break'"
+            [attr.aria-selected]="courierState() === 'break'"
+            (click)="setState('break')"
+          >
+            <span class="hp-courier__state-btn-inner">
+              <svg class="hp-courier__state-ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M6 2v6c0 2.97 2.16 5.43 5 5.91V19H8v2h8v-2h-3v-5.09c2.84-.48 5-2.94 5-5.91V2H6zm2 2h8v4c0 1.66-1.34 3-3 3h-2c-1.66 0-3-1.34-3-3V4z"
+                />
+              </svg>
+              <span class="hp-courier__state-label">Mola</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div class="hp-courier__header-right">
+        <hp-theme-toggle />
+        <div class="hp-courier__user" title="{{ userEmail() }}">
+          <span class="hp-courier__user-avatar" aria-hidden="true">{{ userName().charAt(0) }}</span>
+          <div class="hp-courier__user-meta">
+            <span class="hp-courier__user-name">{{ userName() }}</span>
+            <span class="hp-courier__user-email">{{ userEmail() }}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main #courierScroll class="hp-courier__content">
+      <router-outlet />
+    </main>
+  </div>
+
+  @if (breakModalOpen()) {
+    <div class="hp-courier__modal-layer" (click)="closeBreakModal()">
+      <div class="hp-courier__modal" role="dialog" aria-modal="true" aria-label="Mola talebi" (click)="$event.stopPropagation()">
+        <div class="hp-courier__modal-head">
+          <h3>Mola Talebi</h3>
+          <button type="button" class="hp-courier__modal-close" (click)="closeBreakModal()">Kapat</button>
+        </div>
+        <div class="hp-courier__modal-body">
+          <label>
+            <span>Mola nedeni</span>
+            <div class="hp-select-field-wrap">
+            <select class="hp-select-field" [ngModel]="breakReason()" (ngModelChange)="breakReason.set($event)">
+              <option value="Yemek">Yemek</option>
+              <option value="Dinlenme">Dinlenme</option>
+              <option value="Kısa ihtiyaç molası">Kısa ihtiyaç molası</option>
+            </select>
+            </div>
+          </label>
+          <label>
+            <span>Mola süresi</span>
+            <div class="hp-select-field-wrap">
+            <select class="hp-select-field" [ngModel]="breakDuration()" (ngModelChange)="breakDuration.set($event)">
+              <option value="10">10 dk</option>
+              <option value="15">15 dk</option>
+              <option value="20">20 dk</option>
+              <option value="30">30 dk</option>
+            </select>
+            </div>
+          </label>
+        </div>
+        <div class="hp-courier__modal-actions">
+          <button type="button" class="hp-courier__modal-btn hp-courier__modal-btn--ghost" (click)="closeBreakModal()">Vazgeç</button>
+          <button type="button" class="hp-courier__modal-btn hp-courier__modal-btn--primary" (click)="submitBreakRequest()">Talep Gönder</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

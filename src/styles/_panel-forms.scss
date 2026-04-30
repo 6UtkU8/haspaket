@@ -1,0 +1,145 @@
+/**
+ * Panel formları — firma / admin / kurye ortak alan stilleri.
+ * Yerel `<select>`: `.hp-select-field` + `_panel-forms.scss`.
+ */
+
+.hp-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hp-panel-field-gap);
+  min-width: 0;
+}
+
+.hp-field__label {
+  font-size: var(--hp-panel-field-label);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--hp-color-text-muted);
+}
+
+.hp-input,
+.hp-textarea {
+  width: 100%;
+  margin: 0;
+  padding: var(--hp-panel-input-pad-y) var(--hp-panel-input-pad-x);
+  border-radius: var(--hp-radius-sm);
+  border: 1px solid var(--hp-color-border);
+  background: var(--hp-color-input-bg);
+  color: var(--hp-color-text);
+  box-sizing: border-box;
+  font-size: var(--hp-panel-input-font);
+  font-family: inherit;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hp-textarea {
+  resize: vertical;
+  min-height: 2.75rem;
+}
+
+.hp-input:focus-visible,
+.hp-textarea:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--hp-color-primary) 55%, var(--hp-color-border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--hp-color-primary) 35%, transparent);
+}
+
+.hp-input::placeholder,
+.hp-textarea::placeholder {
+  color: color-mix(in srgb, var(--hp-color-text-muted) 65%, transparent);
+}
+
+/**
+ * Native select — premium dark (panel kökleri + `.hp-select-field`).
+ * Option renkleri tamamen tarayıcıya bağlı; koyu yüzey + inset ile kontrast iyileştirilir.
+ */
+.hp-select-field-wrap {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+:where(.hp-admin, .hp-firma, .hp-courier) select:not([multiple]),
+select.hp-select-field:not([multiple]) {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  max-width: 100%;
+  min-height: 2.35rem;
+  padding: 0 2.15rem 0 0.72rem;
+  border-radius: var(--hp-radius-sm);
+  border: 1px solid color-mix(in srgb, var(--hp-color-border) 78%, transparent);
+  background-color: color-mix(in srgb, var(--hp-color-surface-elevated) 74%, #070b12 26%);
+  background-image:
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, #fff 11%, transparent),
+      transparent 48%
+    ),
+    linear-gradient(45deg, transparent 50%, color-mix(in srgb, var(--hp-color-primary) 68%, #ffb347 32%) 50%),
+    linear-gradient(135deg, color-mix(in srgb, var(--hp-color-primary) 68%, #ffb347 32%) 50%, transparent 50%);
+  background-position:
+    0 0,
+    calc(100% - 0.82rem) calc(50% - 2px),
+    calc(100% - 0.52rem) calc(50% - 2px);
+  background-size:
+    100% 100%,
+    6px 6px,
+    6px 6px;
+  background-repeat: no-repeat;
+  color: var(--hp-color-text);
+  font: inherit;
+  box-sizing: border-box;
+  font-size: var(--hp-panel-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 10%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #000 28%, transparent),
+    0 6px 18px color-mix(in srgb, #000 26%, transparent);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+:where(.hp-admin, .hp-firma, .hp-courier) select:not([multiple]):hover:not(:disabled),
+select.hp-select-field:not([multiple]):hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--hp-color-primary) 46%, var(--hp-color-border));
+  filter: brightness(1.05);
+}
+
+:where(.hp-admin, .hp-firma, .hp-courier) select:not([multiple]):focus-visible,
+select.hp-select-field:not([multiple]):focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--hp-color-primary) 62%, #38bdf8 38%);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--hp-color-primary) 26%, transparent),
+    0 0 0 5px color-mix(in srgb, #38bdf8 22%, transparent),
+    0 10px 22px color-mix(in srgb, var(--hp-color-primary) 14%, transparent);
+}
+
+:where(.hp-admin, .hp-firma, .hp-courier) select:disabled,
+select.hp-select-field:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+  filter: grayscale(0.08);
+}
+
+:where(.hp-admin, .hp-firma, .hp-courier) select option,
+select.hp-select-field option {
+  background: color-mix(in srgb, var(--hp-color-surface-elevated) 96%, #05080f 4%);
+  color: var(--hp-color-text);
+  padding-block: 0.38rem;
+  padding-inline: 0.45rem;
+}

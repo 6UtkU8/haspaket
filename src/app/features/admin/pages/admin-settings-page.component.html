@@ -1,0 +1,232 @@
+<div class="hp-asettings hp-shell-page">
+  <section class="hp-asettings__page-head" aria-label="Sayfa başlığı">
+    <h1 class="hp-asettings__title">Ayar Merkezi</h1>
+    <p class="hp-asettings__subtitle">Operasyon, görünüm ve güvenlik ayarlarını tek yerden yönetin.</p>
+  </section>
+
+  <section class="hp-asettings__layout hp-shell-stagger" aria-label="Ayar merkezi">
+    <hp-panel-card title="Ayar modülleri">
+      <div class="hp-asettings__menu">
+        @for (module of modules; track module.id) {
+          <button
+            type="button"
+            class="hp-asettings__menu-item"
+            [class.hp-asettings__menu-item--active]="activeModule() === module.id"
+            (click)="setActiveModule(module.id)"
+          >
+            <span class="hp-asettings__menu-icon">{{ module.icon }}</span>
+            <span class="hp-asettings__menu-meta">
+              <strong>{{ module.title }}</strong>
+              <small>{{ module.desc }}</small>
+            </span>
+          </button>
+        }
+      </div>
+      <div class="hp-asettings__menu-note">
+        <strong>İpucu</strong>
+        <p>Modül değiştirip düzenleme yaptıktan sonra sağ üstten tüm ayarları tek adımda kaydedebilirsiniz.</p>
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Ayar içerikleri">
+      <div class="hp-asettings__top-actions">
+        <button type="button" class="hp-asettings__btn hp-asettings__btn--ghost" (click)="resetAll()">Sıfırla</button>
+        <button type="button" class="hp-asettings__btn" (click)="saveAll()">Tümünü Kaydet</button>
+      </div>
+      @if (saveMessage()) {
+        <p class="hp-asettings__feedback">{{ saveMessage() }}</p>
+      }
+      <div class="hp-asettings__helper">
+        <strong>Yardımcı not</strong>
+        <span>Yaptığınız değişiklikler bu panelde anlık görünür, kalıcı olması için `Tümünü Kaydet` kullanın.</span>
+      </div>
+
+      @if (activeModule() === 'genel') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row"><span><strong>Panel başlığı</strong><small>Admin üst alanında görünür.</small></span><input [ngModel]="settings().genel.panelTitle" (ngModelChange)="updateGenel('panelTitle', $event)" /></label>
+          <label class="hp-asettings__row"><span><strong>Destek e-posta adresi</strong><small>Sistem bildirimleri için destek kanalı.</small></span><input type="email" [ngModel]="settings().genel.supportEmail" (ngModelChange)="updateGenel('supportEmail', $event)" /></label>
+          <label class="hp-asettings__row"><span><strong>Destek telefonu</strong><small>Müşteri ve kurye destek hattı.</small></span><input [ngModel]="settings().genel.supportPhone" (ngModelChange)="updateGenel('supportPhone', $event)" /></label>
+          <label class="hp-asettings__row"><span><strong>Merkez adres</strong><small>Kurumsal merkez bilgisi.</small></span><input [ngModel]="settings().genel.headquartersAddress" (ngModelChange)="updateGenel('headquartersAddress', $event)" /></label>
+        </div>
+      }
+
+      @if (activeModule() === 'firmaportal') {
+        <div class="hp-asettings__firma-scope">
+          <p class="hp-asettings__firma-note">
+            Bu alan firma (<strong>dükkan</strong>) oturumlarını doğrudan etkiler — değişiklik demo verisinde anında saklanır ve bütün
+            firma panellerinde güncellenir.
+          </p>
+          <div class="hp-asettings__rows">
+            <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Firmanın iptal düğmesi</strong><small>Kapalıyken dükkan siparişi iptal edemez.</small></span><input type="checkbox" [ngModel]="ops.firmPortalGlobalSettings().firmCancellationEnabled" (ngModelChange)="setFirmCancellationEnabled($event)" /></label>
+            <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Siparişten sonra iptal süresini sınırla</strong><small>Kapalıyken iptal süresi dolmuş sayılmaz (sınırsız pencere).</small></span><input type="checkbox" [ngModel]="firmGraceLimitEnabled()" (ngModelChange)="setFirmGraceLimitEnabled($event)" /></label>
+            <label class="hp-asettings__row"><span><strong>İptal için üst süre (dakika)</strong><small>Örn. 1: sipariş oluşturulduktan 1 dakika sonra dükkan iptal edemez.</small></span><input type="number" min="0" step="1" [disabled]="!firmGraceLimitEnabled()" [ngModel]="firmGraceMinutesDraft()" (ngModelChange)="patchFirmGraceMinutes($event)" /></label>
+          </div>
+          <h3 class="hp-asettings__firma-sub">Sorumlu kişiler</h3>
+          <p class="hp-asettings__firma-caption">Firma panelinde üst bardaki «Sorumlular» ile gösterilir (şef / operasyon).</p>
+          <div class="hp-asettings__table-wrap hp-asettings__table-wrap--tight">
+            <table class="hp-asettings__table">
+              <thead>
+                <tr><th>Unvan</th><th>Ad soyad</th><th>GSM</th><th></th></tr>
+              </thead>
+              <tbody>
+                @for (c of ops.firmPortalGlobalSettings().responsibleContacts; track c.id) {
+                  <tr>
+                    <td><input class="hp-asettings__table-input" [ngModel]="c.roleLabel ?? ''" (ngModelChange)="onFirmaResponsibleRoleLabel(c.id, $event)" placeholder="Şef vb." /></td>
+                    <td><input class="hp-asettings__table-input" [ngModel]="c.name" (ngModelChange)="updateFirmaResponsibleField(c.id, { name: $event })" /></td>
+                    <td><input class="hp-asettings__table-input" [ngModel]="c.phone" (ngModelChange)="updateFirmaResponsibleField(c.id, { phone: $event })" /></td>
+                    <td class="hp-asettings__table-actions"><button type="button" (click)="removeFirmaResponsible(c.id)">Sil</button></td>
+                  </tr>
+                } @empty {
+                  <tr><td colspan="4">Liste boş. Aşağıdan ekleyebilirsiniz.</td></tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="hp-asettings__firma-add">
+            <label><span>Yeni · unvan</span><input placeholder="Örn. Kurye şefi" [ngModel]="newFirmaResponsible().roleLabel" (ngModelChange)="newFirmaResponsible.update((d) => ({ ...d, roleLabel: $event }))" /></label>
+            <label><span>Ad soyad</span><input [ngModel]="newFirmaResponsible().name" (ngModelChange)="newFirmaResponsible.update((d) => ({ ...d, name: $event }))" /></label>
+            <label><span>GSM</span><input [ngModel]="newFirmaResponsible().phone" (ngModelChange)="newFirmaResponsible.update((d) => ({ ...d, phone: $event }))" /></label>
+            <button type="button" class="hp-asettings__btn" (click)="addFirmaResponsiblePerson()">Sorumlu ekle</button>
+          </div>
+        </div>
+      }
+
+      @if (activeModule() === 'operasyon') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row"><span><strong>Sipariş iptal süresi (dk)</strong><small>İptal için izin verilen dakika.</small></span><input type="number" [ngModel]="settings().operasyon.cancelLimitMinutes" (ngModelChange)="updateOperasyon('cancelLimitMinutes', +$event || 0)" /></label>
+          <label class="hp-asettings__row"><span><strong>Kurye başına en fazla aktif paket</strong><small>Aynı anda taşınabilecek paket limiti.</small></span><input type="number" [ngModel]="settings().operasyon.maxActivePerCourier" (ngModelChange)="updateOperasyon('maxActivePerCourier', +$event || 0)" /></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Restoran telefonu zorunlu</strong><small>Siparişte restoran telefonu boş geçilmesin.</small></span><input type="checkbox" [ngModel]="settings().operasyon.requireRestaurantPhone" (ngModelChange)="updateOperasyon('requireRestaurantPhone', $event)" /></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Kurye adresi teslim almadan görmesin</strong><small>Adres gizliliği için teslim alma zorunluluğu.</small></span><input type="checkbox" [ngModel]="settings().operasyon.hideCourierAddressUntilPickup" (ngModelChange)="updateOperasyon('hideCourierAddressUntilPickup', $event)" /></label>
+        </div>
+      }
+
+      @if (activeModule() === 'otomasyon') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Otomatik kurye atama</strong><small>Uygun kuryeyi sistem atar.</small></span><input type="checkbox" [ngModel]="settings().otomasyon.autoAssignCourier" (ngModelChange)="updateOtomasyon('autoAssignCourier', $event)" /></label>
+          <label class="hp-asettings__row"><span><strong>Atama gecikmesi (sn)</strong><small>Yeni siparişte otomatik atama gecikmesi.</small></span><input type="number" [ngModel]="settings().otomasyon.assignDelaySec" (ngModelChange)="updateOtomasyon('assignDelaySec', +$event || 0)" /></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Akıllı önceliklendirme</strong><small>Süre, mesafe ve yoğunluk bazlı sıralama.</small></span><input type="checkbox" [ngModel]="settings().otomasyon.smartPrioritization" (ngModelChange)="updateOtomasyon('smartPrioritization', $event)" /></label>
+        </div>
+      }
+
+      @if (activeModule() === 'harita') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row"><span><strong>Canlı yenileme sıklığı (sn)</strong><small>Harita konum verisinin yenileme süresi.</small></span><input type="number" [ngModel]="settings().harita.liveRefreshSec" (ngModelChange)="updateHarita('liveRefreshSec', +$event || 0)" /></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Kurye izlerini göster</strong><small>Haritada rota izi çizimini etkinleştirir.</small></span><input type="checkbox" [ngModel]="settings().harita.showCourierTrails" (ngModelChange)="updateHarita('showCourierTrails', $event)" /></label>
+          <label class="hp-asettings__row"><span><strong>Adres görünürlük modu</strong><small>Konum bilgilerinin detay seviyesi.</small></span><select [ngModel]="settings().harita.addressVisibilityMode" (ngModelChange)="updateHarita('addressVisibilityMode', $event)"><option>Tam Adres</option><option>Mahalle + Sokak</option><option>Sadece Bölge</option></select></label>
+        </div>
+      }
+
+      @if (activeModule() === 'bolge') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row"><span><strong>Hesaplama tipi</strong><small>Teslimat ücret modeli seçimi.</small></span><select [ngModel]="settings().bolge.pricingType" (ngModelChange)="updateBolge('pricingType', $event)"><option>Mesafe Bazlı</option><option>Sabit Ücret</option><option>Hibrit</option></select></label>
+          <label class="hp-asettings__row"><span><strong>Temel teslimat ücreti (₺)</strong><small>Başlangıç ücreti.</small></span><input type="number" [ngModel]="settings().bolge.baseDeliveryFee" (ngModelChange)="updateBolge('baseDeliveryFee', +$event || 0)" /></label>
+          <label class="hp-asettings__row"><span><strong>Mesafe adımı (km)</strong><small>Ücret artış aralığı.</small></span><input type="number" step="0.1" [ngModel]="settings().bolge.distanceStepKm" (ngModelChange)="updateBolge('distanceStepKm', +$event || 0)" /></label>
+        </div>
+      }
+
+      @if (activeModule() === 'finans') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row"><span><strong>Varsayılan ödeme görünümü</strong><small>Finans panelinin açılış görünümü.</small></span><select [ngModel]="settings().finans.defaultPaymentView" (ngModelChange)="updateFinans('defaultPaymentView', $event)"><option>Tümü</option><option>Online Öncelikli</option><option>Kapıda Ödeme Öncelikli</option></select></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Çevrim içi ödemeleri vurgula</strong><small>Online ödeme satırlarına vurgu uygular.</small></span><input type="checkbox" [ngModel]="settings().finans.highlightOnlinePayments" (ngModelChange)="updateFinans('highlightOnlinePayments', $event)" /></label>
+        </div>
+      }
+
+      @if (activeModule() === 'vardiya') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Mola talebine izin ver</strong><small>Kurye mola isteği açılır.</small></span><input type="checkbox" [ngModel]="settings().vardiya.allowBreakRequest" (ngModelChange)="updateVardiya('allowBreakRequest', $event)" /></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Yoğun saatte mola kısıtı</strong><small>Pik saatlerde mola filtrelemesi.</small></span><input type="checkbox" [ngModel]="settings().vardiya.peakHourBreakRestriction" (ngModelChange)="updateVardiya('peakHourBreakRestriction', $event)" /></label>
+          <label class="hp-asettings__row"><span><strong>Varsayılan mola süresi (dk)</strong><small>Yeni taleplerde başlangıç süresi.</small></span><input type="number" [ngModel]="settings().vardiya.defaultBreakMinutes" (ngModelChange)="updateVardiya('defaultBreakMinutes', +$event || 0)" /></label>
+        </div>
+      }
+
+      @if (activeModule() === 'bildirim') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Bildirim sesi</strong><small>Sistem sesli bildirim kullanır.</small></span><input type="checkbox" [ngModel]="settings().bildirim.notificationSound" (ngModelChange)="updateBildirim('notificationSound', $event)" /></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Anlık bildirim</strong><small>Kritik olayları anında gösterir.</small></span><input type="checkbox" [ngModel]="settings().bildirim.instantNotification" (ngModelChange)="updateBildirim('instantNotification', $event)" /></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>E-posta özeti</strong><small>Gün sonu özet e-posta gönderimi.</small></span><input type="checkbox" [ngModel]="settings().bildirim.emailDigest" (ngModelChange)="updateBildirim('emailDigest', $event)" /></label>
+        </div>
+      }
+
+      @if (activeModule() === 'marka') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row"><span><strong>Panel vurgu rengi</strong><small>Kritik CTA ve kenarlık vurgusu.</small></span><select [ngModel]="settings().marka.accentColor" (ngModelChange)="updateMarka('accentColor', $event)"><option>Turuncu</option><option>Mavi</option><option>Mor</option><option>Yeşil</option></select></label>
+          <label class="hp-asettings__row"><span><strong>Kart yoğunluğu</strong><small>Panel içeriği sıkışıklık seviyesi.</small></span><select [ngModel]="settings().marka.cardDensity" (ngModelChange)="updateMarka('cardDensity', $event)"><option>Konforlu</option><option>Kompakt</option><option>Geniş</option></select></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Cam yüzey etkisi</strong><small>Arka plan blur ve parlama efekti.</small></span><input type="checkbox" [ngModel]="settings().marka.glassSurfaceEffect" (ngModelChange)="updateMarka('glassSurfaceEffect', $event)" /></label>
+        </div>
+      }
+
+      @if (activeModule() === 'guvenlik') {
+        <div class="hp-asettings__rows">
+          <label class="hp-asettings__row"><span><strong>Kayıt detay seviyesi</strong><small>Logların tutulma ayrıntısı.</small></span><select [ngModel]="settings().guvenlik.logLevel" (ngModelChange)="updateGuvenlik('logLevel', $event)"><option>Standart</option><option>Detaylı</option><option>Tam Denetim</option></select></label>
+          <label class="hp-asettings__row"><span><strong>Kayıt saklama süresi (gün)</strong><small>Log arşiv saklama limiti.</small></span><input type="number" [ngModel]="settings().guvenlik.logRetentionDays" (ngModelChange)="updateGuvenlik('logRetentionDays', +$event || 0)" /></label>
+          <label class="hp-asettings__row hp-asettings__row--toggle"><span><strong>Hassas olayları göster</strong><small>Yetki ihlali ve finans olaylarını görünür yap.</small></span><input type="checkbox" [ngModel]="settings().guvenlik.showSensitiveEvents" (ngModelChange)="updateGuvenlik('showSensitiveEvents', $event)" /></label>
+          <div class="hp-asettings__row hp-asettings__row--readonly"><span><strong>Son güncelleme</strong><small>Kaydetme ile otomatik yenilenir.</small></span><span class="hp-asettings__value">{{ settings().guvenlik.lastUpdatedAt | date: 'dd.MM.yyyy HH:mm' }}</span></div>
+        </div>
+      }
+
+      @if (activeModule() === 'direktorler') {
+        <div class="hp-asettings__director-actions">
+          <button type="button" class="hp-asettings__btn" (click)="openAddDirectorModal()">Yeni Direktör Ekle</button>
+          <button type="button" class="hp-asettings__btn hp-asettings__btn--ghost" (click)="formerDirectorsModalOpen.set(true)">İşten Çıkan Direktörler</button>
+        </div>
+        <div class="hp-asettings__table-wrap">
+          <table class="hp-asettings__table">
+            <thead>
+              <tr><th>Ad Soyad</th><th>E-posta</th><th>Telefon</th><th>Mesai Durumu</th><th>Yetki Sayısı</th><th>Çalışma Durumu</th><th>İşlem</th></tr>
+            </thead>
+            <tbody>
+              @for (director of activeDirectors(); track director.id) {
+                <tr>
+                  <td>{{ director.name }}</td>
+                  <td>{{ director.email }}</td>
+                  <td>{{ director.phone }}</td>
+                  <td><select [ngModel]="director.shift" (ngModelChange)="updateDirectorShift(director.id, $event)"><option>Gündüz</option><option>Akşam</option><option>Gece</option></select></td>
+                  <td>{{ director.permissionCount }}</td>
+                  <td>{{ director.workStatus }}</td>
+                  <td class="hp-asettings__table-actions"><button type="button" (click)="toggleDirectorLeave(director.id)">İşten Çıkar</button><button type="button" (click)="removeDirector(director.id)">Sil</button></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="7">Aktif direktör bulunmuyor.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </hp-panel-card>
+  </section>
+
+  @if (addDirectorModalOpen()) {
+    <div class="hp-asettings__modal-layer" (click)="addDirectorModalOpen.set(false)">
+      <section class="hp-asettings__modal" (click)="$event.stopPropagation()">
+        <h3>Yeni Direktör Ekle</h3>
+        <label><span>Ad Soyad</span><input [ngModel]="newDirector().name" (ngModelChange)="newDirector.update((d) => ({ ...d, name: $event }))" /></label>
+        <label><span>E-posta</span><input type="email" [ngModel]="newDirector().email" (ngModelChange)="newDirector.update((d) => ({ ...d, email: $event }))" /></label>
+        <label><span>Telefon</span><input [ngModel]="newDirector().phone" (ngModelChange)="newDirector.update((d) => ({ ...d, phone: $event }))" /></label>
+        <label><span>Mesai Durumu</span><select [ngModel]="newDirector().shift" (ngModelChange)="newDirector.update((d) => ({ ...d, shift: $event }))"><option>Gündüz</option><option>Akşam</option><option>Gece</option></select></label>
+        <label><span>Yetki Sayısı</span><input type="number" [ngModel]="newDirector().permissionCount" (ngModelChange)="newDirector.update((d) => ({ ...d, permissionCount: +$event || 0 }))" /></label>
+        <div class="hp-asettings__modal-actions">
+          <button type="button" class="hp-asettings__btn hp-asettings__btn--ghost" (click)="addDirectorModalOpen.set(false)">Vazgeç</button>
+          <button type="button" class="hp-asettings__btn" (click)="addDirector()">Ekle</button>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if (formerDirectorsModalOpen()) {
+    <div class="hp-asettings__modal-layer" (click)="formerDirectorsModalOpen.set(false)">
+      <section class="hp-asettings__modal" (click)="$event.stopPropagation()">
+        <h3>İşten Çıkan Direktörler</h3>
+        <ul class="hp-asettings__former-list">
+          @for (director of formerDirectors(); track director.id) {
+            <li><strong>{{ director.name }}</strong><span>{{ director.email }} · {{ director.phone }}</span></li>
+          } @empty {
+            <li>Listede eski direktör bulunmuyor.</li>
+          }
+        </ul>
+        <div class="hp-asettings__modal-actions">
+          <button type="button" class="hp-asettings__btn" (click)="formerDirectorsModalOpen.set(false)">Kapat</button>
+        </div>
+      </section>
+    </div>
+  }
+</div>

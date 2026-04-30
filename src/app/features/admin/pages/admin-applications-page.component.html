@@ -1,0 +1,132 @@
+<div class="hp-aapps hp-shell-page">
+  <section class="hp-aapps__page-head" aria-label="Sayfa başlık alanı">
+    <h1 class="hp-aapps__title">Başvurular</h1>
+  </section>
+  <section class="hp-aapps__grid hp-shell-stagger">
+    <hp-panel-card title="Kurye Başvuruları">
+      <div class="hp-aapps__table-wrap">
+        <table class="hp-aapps__table">
+          <thead>
+            <tr>
+              <th>Ad Soyad</th>
+              <th>Telefon</th>
+              <th>Bölge</th>
+              <th>Durum</th>
+              <th>Aksiyon</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (application of courierApplications(); track application.id) {
+              <tr [class.hp-aapps__row--pending]="application.status === 'bekliyor'">
+                <td>{{ application.data.name }}</td>
+                <td>{{ application.data.phone }}</td>
+                <td>{{ application.data.region }}</td>
+                <td>
+                  <span
+                    class="hp-aapps__badge"
+                    [class.hp-aapps__badge--approved]="application.status === 'onaylandi'"
+                    [class.hp-aapps__badge--rejected]="application.status === 'reddedildi'"
+                  >
+                    {{ badgeLabel(application.status) }}
+                  </span>
+                </td>
+                <td class="hp-aapps__actions-cell">
+                  @if (application.status === 'bekliyor') {
+                    <div class="hp-aapps__actions">
+                      <button type="button" class="hp-aapps__btn" (click)="setCourierStatus(application.id, 'onaylandi')">
+                        Onayla
+                      </button>
+                      <button type="button" class="hp-aapps__btn hp-aapps__btn--danger" (click)="setCourierStatus(application.id, 'reddedildi')">
+                        Reddet
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="hp-aapps__actions-done" aria-hidden="true">—</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="hp-aapps__empty">Kurye başvurusu yok.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Firma Başvuruları">
+      <div class="hp-aapps__table-wrap">
+        <table class="hp-aapps__table">
+          <thead>
+            <tr>
+              <th>Firma</th>
+              <th>Adres</th>
+              <th>Yetkili</th>
+              <th>Durum</th>
+              <th>Aksiyon</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (application of companyApplications(); track application.id) {
+              <tr [class.hp-aapps__row--pending]="application.status === 'bekliyor'">
+                <td>{{ application.data.companyName }}</td>
+                <td>{{ application.data.address }}</td>
+                <td>{{ application.data.contactPerson }}</td>
+                <td>
+                  <span
+                    class="hp-aapps__badge"
+                    [class.hp-aapps__badge--approved]="application.status === 'onaylandi'"
+                    [class.hp-aapps__badge--rejected]="application.status === 'reddedildi'"
+                  >
+                    {{ badgeLabel(application.status) }}
+                  </span>
+                </td>
+                <td class="hp-aapps__actions-cell">
+                  @if (application.status === 'bekliyor') {
+                    <div class="hp-aapps__actions">
+                      <button type="button" class="hp-aapps__btn" (click)="setCompanyStatus(application.id, 'onaylandi')">
+                        Onayla
+                      </button>
+                      <button type="button" class="hp-aapps__btn hp-aapps__btn--danger" (click)="setCompanyStatus(application.id, 'reddedildi')">
+                        Reddet
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="hp-aapps__actions-done" aria-hidden="true">—</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="hp-aapps__empty">Firma başvurusu yok.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-aapps__grid hp-aapps__grid--compact">
+    <hp-panel-card title="Onaylanan yeni kuryeler (mock shared state)">
+      <ul class="hp-aapps__list">
+        @for (courier of approvedCouriers(); track courier.id) {
+          <li>{{ courier.name }}</li>
+        } @empty {
+          <li>Henüz onaylanan kurye yok.</li>
+        }
+      </ul>
+    </hp-panel-card>
+
+    <hp-panel-card title="Onaylanan yeni firmalar (mock shared state)">
+      <ul class="hp-aapps__list">
+        @for (company of approvedCompanies(); track company.id) {
+          <li>{{ company.name }}</li>
+        } @empty {
+          <li>Henüz onaylanan firma yok.</li>
+        }
+      </ul>
+    </hp-panel-card>
+  </section>
+</div>

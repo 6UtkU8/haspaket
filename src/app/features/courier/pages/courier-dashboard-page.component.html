@@ -1,0 +1,292 @@
+<div class="hp-cdash hp-shell-page">
+  <section class="hp-cdash__page-head" aria-label="Sayfa başlığı">
+    <h1 class="hp-cdash__title">Üzerime Düşen Paketler</h1>
+  </section>
+
+  <section class="hp-cdash__grid hp-shell-stagger" aria-label="Paket akışı">
+    <hp-panel-card title="Atanan paketler">
+      <span panel-actions class="hp-cdash__sort-wrap">
+        <label class="hp-cdash__sort">
+          <span class="hp-cdash__sort-text">Sırala</span>
+          <select
+            class="hp-cdash__sort-select"
+            [ngModel]="sortOption()"
+            (ngModelChange)="setSortOption($event)"
+          >
+            <option value="newest-added">Yeni eklenen</option>
+            <option value="oldest-added">Eski eklenen</option>
+            <option value="elapsed-asc">Süre artan</option>
+            <option value="elapsed-desc">Süre azalan</option>
+            <option value="route-zone">Rota / bölge</option>
+            <option value="status-sort">Durum</option>
+            <option value="manuel-siralama">Manuel sıralama</option>
+          </select>
+        </label>
+      </span>
+      @if (activeTasks().length) {
+        <ul
+          class="hp-cdash__list hp-cdash__list--drop"
+          role="list"
+          cdkDropList
+          [cdkDropListData]="sortedActiveTasks()"
+          (cdkDropListDropped)="onAssignedDrop($event)"
+        >
+          @for (task of sortedActiveTasks(); track task.id) {
+            <li
+              cdkDrag
+              class="hp-cdash__pkg-card"
+              [class.hp-cdash__pkg-card--active]="isTaskSelected(task.id)"
+              [attr.data-status]="task.status"
+              (click)="selectTask(task.id)"
+            >
+              <div class="hp-cdash__pkg-topbar">
+                <button
+                  type="button"
+                  class="hp-cdash__drag-handle"
+                  cdkDragHandle
+                  aria-label="Paketi sürükleyerek sırayı değiştir"
+                  (click)="$event.stopPropagation()"
+                  (pointerdown)="$event.stopPropagation()"
+                >
+                  <span class="hp-cdash__drag-grip" aria-hidden="true"></span>
+                </button>
+                <div class="hp-cdash__pkg-identity">
+                  <div class="hp-cdash__pkg-card-top">
+                    <span class="hp-cdash__pkg-id">{{ task.id }}</span>
+                    <span class="hp-cdash__chip" [ngClass]="packageChipModifier(task.status)">{{ statusLabel(task.status) }}</span>
+                  </div>
+                  <p class="hp-cdash__pkg-customer">{{ task.customer }}</p>
+                  <p class="hp-cdash__pkg-route">{{ task.from }} → {{ task.to }}</p>
+                </div>
+              </div>
+
+              <div class="hp-cdash__pkg-strip">
+                <div class="hp-cdash__pkg-metric">
+                  <span>Teslim noktası</span>
+                  <strong>{{ task.to }}</strong>
+                </div>
+                <div class="hp-cdash__pkg-metric">
+                  <span>Geçen süre</span>
+                  <strong class="hp-cdash__time">{{ elapsedFor(task) }}</strong>
+                </div>
+                <button
+                  type="button"
+                  class="hp-cdash__map-btn hp-cdash__map-btn--inline"
+                  (click)="openInMaps(task.to); $event.stopPropagation()"
+                  aria-label="Adresi haritada aç"
+                >
+                  Haritada aç
+                </button>
+              </div>
+
+              <div class="hp-cdash__pkg-footer">
+                <div class="hp-cdash__pkg-primary-actions hp-cdash__pkg-primary-actions--footer-bar">
+                  <button
+                    type="button"
+                    class="hp-cdash__map-btn hp-cdash__map-btn--footer"
+                    (click)="throwToPool(task.id); $event.stopPropagation()"
+                  >
+                    Havuza at
+                  </button>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="hp-cdash__empty hp-cdash__empty--packages" role="status">
+          <div class="hp-cdash__empty-visual" aria-hidden="true"></div>
+          <p class="hp-cdash__empty-title">Atanmış aktif paket yok</p>
+          <p class="hp-cdash__empty-desc">Yeni görev atandığında kartlar burada görünür; havuzdan veya admin atamasıyla paket alabilirsiniz.</p>
+        </div>
+      }
+    </hp-panel-card>
+
+    <hp-panel-card title="Paket detayı">
+      @if (selectedTask(); as task) {
+        <div class="hp-cdash__detail-shell">
+          <div class="hp-cdash__detail-hero">
+            <div class="hp-cdash__detail-hero-head">
+              <div class="hp-cdash__detail-identity">
+                <div class="hp-cdash__detail-title-row">
+                  <span class="hp-cdash__detail-id">{{ task.id }}</span>
+                  <span class="hp-cdash__chip hp-cdash__chip--lg" [ngClass]="packageChipModifier(task.status)">{{ statusLabel(task.status) }}</span>
+                </div>
+                <p class="hp-cdash__detail-customer">{{ task.customer }}</p>
+                <p class="hp-cdash__detail-route">{{ task.from }} → {{ task.to }}</p>
+              </div>
+              <button type="button" class="hp-cdash__map-btn hp-cdash__map-btn--detail" (click)="openInMaps(task.to)" aria-label="Adresi haritada aç">
+                Haritada aç
+              </button>
+            </div>
+
+            @if (task.customerPhone?.trim()) {
+              <div class="hp-cdash__detail-call-row">
+                <div class="hp-cdash__detail-call-info">
+                  <span class="hp-cdash__detail-call-label">Müşteri tel</span>
+                  @if (customerPhoneTelHref(task); as telHref) {
+                    <a [href]="telHref" class="hp-cdash__detail-call-num">{{ task.customerPhone }}</a>
+                  } @else {
+                    <span class="hp-cdash__detail-call-num hp-cdash__detail-call-num--plain">{{ task.customerPhone }}</span>
+                    <span class="hp-cdash__detail-call-weak"
+                      >Tıklanabilir arama için 05xx / 5xx ile başlayan 10 haneli GSM.</span
+                    >
+                  }
+                </div>
+                <div class="hp-cdash__detail-call-actions">
+                  @if (customerPhoneTelHref(task); as telHrefSide) {
+                    <a
+                      [href]="telHrefSide"
+                      class="hp-cdash__map-btn hp-cdash__map-btn--detail hp-cdash__map-btn--inline"
+                      aria-label="Müşteri numarasını ara"
+                    >
+                      Müşteriyi ara
+                    </a>
+                  } @else {
+                    <button
+                      type="button"
+                      disabled
+                      class="hp-cdash__map-btn hp-cdash__map-btn--detail hp-cdash__map-btn--inline hp-cdash__detail-call-btn--muted"
+                      title="Geçerli GSM formatıyla tekrar deneyin (05xx / 5xx, 10 rakam)."
+                    >
+                      Müşteriyi ara
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+
+            <dl class="hp-cdash__detail-kpis">
+              <div>
+                <dt>Geçen süre</dt>
+                <dd class="hp-cdash__time">{{ elapsedFor(task) }}</dd>
+              </div>
+              <div>
+                <dt>Çıkış</dt>
+                <dd>{{ task.from }}</dd>
+              </div>
+              <div>
+                <dt>Teslim</dt>
+                <dd>{{ task.to }}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="hp-cdash__detail-action-zone">
+            <div class="hp-cdash__detail-action-head">
+              <p class="hp-cdash__section-kicker">Hızlı işlemler</p>
+              <span class="hp-cdash__detail-action-hint">Paket seçiliyken akış sırasına göre kullanın.</span>
+            </div>
+            <div class="hp-cdash__actions hp-cdash__actions--detail">
+              @if (customerPhoneTelHref(task); as telQuick) {
+                <a class="hp-cdash__detail-btn hp-cdash__detail-btn--call" [href]="telQuick">Müşteriyi ara</a>
+              }
+              <div class="hp-cdash__detail-action-grid">
+                <button type="button" class="hp-cdash__detail-btn hp-cdash__detail-btn--pick" [disabled]="!canMarkPicked()" (click)="markPicked()">
+                  Paketi Aldım
+                </button>
+                <button type="button" class="hp-cdash__detail-btn hp-cdash__detail-btn--route" (click)="startDelivery()">Yola Çıktım</button>
+                <button type="button" class="hp-cdash__detail-btn hp-cdash__detail-btn--done" (click)="completeDelivery()">Teslim Ettim</button>
+                <button type="button" class="hp-cdash__detail-btn hp-cdash__detail-btn--issue" (click)="openIssueFlow()">Sorun Bildir / İptal</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="hp-cdash__timeline-wrap">
+            <div class="hp-cdash__timeline-head">
+              <h3 class="hp-cdash__timeline-heading">İşlem geçmişi</h3>
+              <span class="hp-cdash__timeline-count">{{ selectedTimeline().length }} kayıt</span>
+            </div>
+            @if (selectedTimeline().length) {
+              <ul class="hp-cdash__timeline" role="list">
+                @for (ev of selectedTimeline(); track ev.id) {
+                  <li class="hp-cdash__timeline-item">
+                    <span class="hp-cdash__timeline-dot" aria-hidden="true"></span>
+                    <div class="hp-cdash__timeline-body">
+                      <strong>{{ ev.label }}</strong>
+                      <span class="hp-cdash__timeline-meta">{{ ev.actor }} · {{ ev.atMs | date: 'dd.MM HH:mm' }}</span>
+                    </div>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="hp-cdash__timeline-empty">Bu paket için henüz kayıt yok.</p>
+            }
+          </div>
+        </div>
+      } @else {
+        <div class="hp-cdash__empty hp-cdash__empty--detail" role="status">
+          <div class="hp-cdash__empty-visual hp-cdash__empty-visual--sm" aria-hidden="true"></div>
+          <p class="hp-cdash__empty-title">Paket seçilmedi</p>
+          <p class="hp-cdash__empty-desc">Soldaki listeden bir paket seçerek rota, süre ve işlem geçmişini görün.</p>
+        </div>
+      }
+    </hp-panel-card>
+  </section>
+
+  <section aria-label="Son paket özeti">
+    <hp-panel-card title="Son paket özeti">
+      @if (lastCompletedTask(); as task) {
+        <div class="hp-cdash__next">
+          <p><strong>{{ task.id }}</strong> · {{ task.customer }}</p>
+          <p>{{ task.from }} → {{ task.to }}</p>
+          <p>Tamamlanma: <span class="hp-cdash__time">{{ task.stageStartedAtMs | date: 'HH:mm' }}</span></p>
+        </div>
+      } @else {
+        <div class="hp-cdash__placeholder" role="status">Henüz tamamlanan paket yok.</div>
+      }
+    </hp-panel-card>
+  </section>
+</div>
+
+@if (deliveryConfirmTaskId()) {
+  <div class="hp-cdash__confirm-layer" (click)="cancelDeliveryConfirm()">
+    <section class="hp-cdash__confirm" (click)="$event.stopPropagation()" aria-label="Teslim onayı">
+      <h3>Teslimatı onaylıyor musunuz?</h3>
+      <p>Bu paket teslim edildi olarak işaretlenecek.</p>
+      <div class="hp-cdash__confirm-actions">
+        <button type="button" class="hp-cdash__btn-ghost hp-cdash__detail-btn hp-cdash__detail-btn--neutral" (click)="cancelDeliveryConfirm()">Vazgeç</button>
+        <button type="button" class="hp-cdash__btn-primary hp-cdash__detail-btn hp-cdash__detail-btn--neutral" (click)="approveDeliveryConfirm()">Onayla</button>
+      </div>
+    </section>
+  </div>
+}
+
+@if (issueFlowStep() === 'menu') {
+  <div class="hp-cdash__issue-layer" (click)="closeIssueFlow()" role="presentation">
+    <div
+      class="hp-cdash__issue-panel hp-cdash__issue-panel--menu"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hp-issue-flow-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h3 id="hp-issue-flow-title" class="hp-cdash__issue-panel-title">İşlem seçin</h3>
+      <p class="hp-cdash__issue-panel-lead">Devam etmek için bir seçenek belirleyin.</p>
+      <div class="hp-cdash__issue-panel-actions">
+        <button type="button" class="hp-cdash__issue-opt" (click)="selectIssueOption('report')">Sorun Bildir</button>
+        <button type="button" class="hp-cdash__issue-opt hp-cdash__issue-opt--emphasis" (click)="selectIssueOption('cancel')">Paketi İptal Et</button>
+        <button type="button" class="hp-cdash__btn-ghost hp-cdash__detail-btn hp-cdash__detail-btn--neutral" (click)="closeIssueFlow()">Vazgeç</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (issueFlowStep() === 'confirm') {
+  <div class="hp-cdash__issue-layer" (click)="closeIssueFlow()" role="presentation">
+    <div
+      class="hp-cdash__issue-panel hp-cdash__issue-panel--confirm"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="hp-issue-confirm-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h3 id="hp-issue-confirm-title">Emin misiniz?</h3>
+      <p class="hp-cdash__issue-panel-lead">{{ issueConfirmBody() }}</p>
+      <div class="hp-cdash__issue-panel-confirm-row">
+        <button type="button" class="hp-cdash__btn-ghost hp-cdash__detail-btn hp-cdash__detail-btn--neutral" (click)="closeIssueFlow()">İptal</button>
+        <button type="button" class="hp-cdash__btn-issue-confirm hp-cdash__detail-btn hp-cdash__detail-btn--neutral" (click)="confirmIssueAction()">Onayla</button>
+      </div>
+    </div>
+  </div>
+}

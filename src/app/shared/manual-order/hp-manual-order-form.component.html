@@ -1,0 +1,75 @@
+<div class="hp-manual-order">
+  <div class="hp-field">
+    <label class="hp-field__label" [attr.for]="nameId">Müşteri adı</label>
+    <input
+      [id]="nameId"
+      class="hp-input"
+      type="text"
+      autocomplete="name"
+      [value]="orderCustomerName()"
+      (input)="orderCustomerName.set($any($event.target).value)"
+    />
+  </div>
+  <div class="hp-field">
+    <label class="hp-field__label" [attr.for]="phoneId">Telefon</label>
+    <input
+      [id]="phoneId"
+      class="hp-input"
+      type="tel"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      autocomplete="tel"
+      [attr.maxlength]="phoneMaxDigits"
+      [attr.aria-describedby]="phoneId + '-hint'"
+      [value]="orderPhone()"
+      (keydown)="onPhoneKeydown($event)"
+      (input)="setPhoneDigitsFromInput($any($event.target).value)"
+    />
+    <span class="hp-field__hint" [id]="phoneId + '-hint'">
+      Yalnızca rakam, en fazla {{ phoneMaxDigits }} (örn. 0532…).
+    </span>
+  </div>
+  <div class="hp-field">
+    <label class="hp-field__label" [attr.for]="addrId">Adres</label>
+    <textarea
+      [id]="addrId"
+      class="hp-textarea"
+      rows="3"
+      [value]="orderAddress()"
+      (input)="orderAddress.set($any($event.target).value)"
+    ></textarea>
+  </div>
+  <div class="hp-field">
+    <label class="hp-field__label" [attr.for]="noteId">Teslimat notu</label>
+    <textarea
+      [id]="noteId"
+      class="hp-textarea"
+      rows="2"
+      [value]="orderNote()"
+      (input)="orderNote.set($any($event.target).value)"
+    ></textarea>
+  </div>
+  <hp-select
+    label="Paket tipi"
+    [options]="packageTypeOptions"
+    [value]="orderPackageType()"
+    (valueChange)="orderPackageType.set($event)"
+  />
+  <hp-select
+    label="Ödeme tipi"
+    [options]="paymentTypeOptions"
+    [value]="orderPaymentType()"
+    (valueChange)="orderPaymentType.set($event)"
+  />
+  <hp-select
+    label="Kurye seçimi"
+    [options]="courierSelectOptions()"
+    [value]="orderCourierId()"
+    (valueChange)="orderCourierId.set($event)"
+  />
+
+  <div class="hp-manual-order__actions">
+    <button type="button" [class]="buttonGhostClass()" (click)="cancel()">İptal</button>
+    <button type="button" [class]="buttonPrimaryClass()" (click)="save()">Kaydet</button>
+  </div>
+</div>

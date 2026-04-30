@@ -1,0 +1,91 @@
+<div class="hp-fodetail hp-shell-page">
+  <section aria-label="Sipariş başlık alanı">
+    <hp-panel-card>
+      @if (order(); as o) {
+        <div class="hp-fodetail__head">
+          <div>
+            <h1>{{ o.id }}</h1>
+          </div>
+          <div class="hp-fodetail__head-actions">
+            <span class="hp-fodetail__badge">{{ ops.statusLabel(o.status) }}</span>
+            <button
+              type="button"
+              class="hp-fodetail__cancel"
+              [disabled]="!cancelState().ok"
+              (click)="requestCancel()"
+            >
+              Siparişi iptal et
+            </button>
+          </div>
+        </div>
+      } @else {
+        <p class="hp-fodetail__empty">Sipariş bulunamadı.</p>
+      }
+    </hp-panel-card>
+  </section>
+
+  @if (order(); as o) {
+    <section class="hp-fodetail__grid hp-shell-stagger" aria-label="Sipariş detay blokları">
+      <hp-panel-card title="Genel Bilgiler">
+        <div class="hp-fodetail__row"><span>Müşteri</span><strong>{{ o.customer }}</strong></div>
+        <div class="hp-fodetail__row"><span>Adres</span><strong>{{ o.from }} → {{ o.to }}</strong></div>
+        <div class="hp-fodetail__row"><span>Durum</span><strong>{{ ops.statusLabel(o.status) }}</strong></div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Kurye">
+        <div class="hp-fodetail__row"><span>Kurye</span><strong>{{ ops.courierName(o.assignedCourierId) }}</strong></div>
+        <div class="hp-fodetail__row">
+          <span>Kurye iletişim</span><strong class="hp-fodetail__row-strong-break">
+            @if (
+              !o.assignedCourierId || ops.courierContactDisplay(o.assignedCourierId) === '—'
+            ) {
+              —
+            } @else {
+              @if (ops.courierContactTelHref(o.assignedCourierId); as tel) {
+                <a [href]="tel">{{ ops.courierContactDisplay(o.assignedCourierId) }}</a>
+              } @else {
+                {{ ops.courierContactDisplay(o.assignedCourierId) }}
+              }
+            }
+          </strong>
+        </div>
+        <div class="hp-fodetail__row"><span>Aşama</span><strong>{{ ops.lifecycleLabel(o) }}</strong></div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Ödeme">
+        <div class="hp-fodetail__row"><span>Ödeme metodu</span><strong>{{ ops.paymentDisplayLabel(o) }}</strong></div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Süre">
+        <div class="hp-fodetail__row"><span>Geçen Süre</span><strong>{{ ops.elapsedFor(o) }}</strong></div>
+      </hp-panel-card>
+
+      @if (!cancelState().ok && cancelState().reason) {
+        <hp-panel-card title="İptal">
+          <p class="hp-fodetail__cancel-note">{{ cancelState().reason }}</p>
+        </hp-panel-card>
+      }
+    </section>
+
+    <section aria-label="Zaman çizelgesi">
+      <hp-panel-card title="Zaman çizelgesi">
+        <ul class="hp-fodetail__timeline">
+          @for (ev of o.timeline; track ev.id) {
+            <li>
+              <div class="hp-fodetail__timeline-top">
+                <strong>{{ ev.label }}</strong>
+                <span>{{ ops.statusLabel(ev.type) }}</span>
+              </div>
+              <div class="hp-fodetail__timeline-bottom">
+                <span>{{ ev.actor }}</span>
+                <span>{{ ev.atMs | date: 'dd.MM.yyyy HH:mm' }}</span>
+              </div>
+            </li>
+          } @empty {
+            <li>Zaman çizelgesi kaydı yok.</li>
+          }
+        </ul>
+      </hp-panel-card>
+    </section>
+  }
+</div>

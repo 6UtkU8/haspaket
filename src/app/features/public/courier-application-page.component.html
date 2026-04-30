@@ -1,0 +1,36 @@
+<main class="hp-application">
+  <section class="hp-application__card">
+    <h1>Kurye Başvuru Formu</h1>
+    <p>Bilgilerinizi iletin, admin panelinden degerlendirelim.</p>
+
+    <form #form="ngForm" (ngSubmit)="submit()" class="hp-application__form">
+      <label>
+        <span>Ad soyad</span>
+        <input name="name" required [ngModel]="name()" (ngModelChange)="name.set($event)" />
+      </label>
+      <label>
+        <span>Telefon</span>
+        <input name="phone" required [ngModel]="phone()" (ngModelChange)="phone.set($event)" />
+      </label>
+      <label>
+        <span>Bolge</span>
+        <input name="region" required [ngModel]="region()" (ngModelChange)="region.set($event)" />
+      </label>
+      <label>
+        <span>Arac tipi (opsiyonel)</span>
+        <input
+          name="vehicleType"
+          [ngModel]="vehicleType()"
+          (ngModelChange)="vehicleType.set($event)"
+        />
+      </label>
+
+      <button type="submit" [disabled]="form.invalid">Başvuruyu Gonder</button>
+      @if (successMessage()) {
+        <p class="hp-application__success">{{ successMessage() }}</p>
+      }
+    </form>
+
+    <a routerLink="/" class="hp-application__back">Anasayfaya don</a>
+  </section>
+</main>

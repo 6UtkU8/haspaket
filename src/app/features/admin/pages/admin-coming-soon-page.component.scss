@@ -1,0 +1,34 @@
+.hp-asoon {
+  max-width: var(--hp-content-max);
+  margin: 0 auto;
+}
+
+.hp-asoon__link {
+  color: var(--hp-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hp-asoon__link:hover {
+  filter: brightness(1.08);
+}
+
+.hp-asoon__badge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  color: var(--hp-color-primary);
+  background: var(--hp-color-primary-soft);
+  border: 1px solid color-mix(in srgb, var(--hp-color-primary) 30%, transparent);
+}
+
+.hp-asoon__hint {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--hp-color-text-muted);
+}

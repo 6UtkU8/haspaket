@@ -1,0 +1,17 @@
+<div class="hp-forders-new hp-shell-page">
+  <section aria-label="Yeni sipariş formu" class="hp-shell-stagger">
+    <hp-panel-card title="Yeni Sipariş">
+      <div class="hp-forders-new__form">
+        <hp-manual-order-form
+          skin="plain"
+          actorLabel="Firma"
+          (cancelClick)="navigateToOrders()"
+          (saved)="onSaved($event)"
+        />
+        <p class="hp-forders-new__back">
+          <a routerLink="/firma/siparisler">Listeye dön</a>
+        </p>
+      </div>
+    </hp-panel-card>
+  </section>
+</div>

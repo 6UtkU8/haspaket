@@ -1,0 +1,70 @@
+<div class="hp-acdetail hp-shell-page">
+  <section aria-label="Kurye başlık alanı">
+    <hp-panel-card>
+      @if (courier(); as c) {
+        <div class="hp-acdetail__head">
+          <div>
+            <h1>{{ c.name }}</h1>
+          </div>
+          <span
+            class="hp-acdetail__badge"
+            [class.hp-acdetail__badge--passive]="stateLabel() !== 'Çevrimiçi'"
+          >
+            {{ stateLabel() }}
+          </span>
+        </div>
+      } @else {
+        <p class="hp-acdetail__empty">Kurye kaydı bulunamadı.</p>
+      }
+    </hp-panel-card>
+  </section>
+
+  @if (courier(); as c) {
+    <section class="hp-acdetail__grid hp-shell-stagger" aria-label="Kurye detay bölümleri">
+      <hp-panel-card title="Profil">
+        <div class="hp-acdetail__rows">
+          <div class="hp-acdetail__row"><span>Ad</span><strong>{{ c.name }}</strong></div>
+          <div class="hp-acdetail__row"><span>Telefon</span><strong>{{ phone() }}</strong></div>
+          <div class="hp-acdetail__row"><span>E-posta</span><strong>{{ c.loginIdentifier }}</strong></div>
+          <div class="hp-acdetail__row"><span>Bölge</span><strong>{{ region() }}</strong></div>
+          <div class="hp-acdetail__row"><span>Durum</span><strong>{{ stateLabel() }}</strong></div>
+        </div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Aktif Görevler">
+        @if (activeTasks().length) {
+          <ul class="hp-acdetail__tasks">
+            @for (task of activeTasks(); track task.id) {
+              <li>
+                <span><strong>{{ task.id }}</strong> · {{ task.from }} → {{ task.to }}</span>
+                <span class="hp-acdetail__mini">{{ ops.statusLabel(task.status) }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="hp-acdetail__empty">Aktif görev yok.</p>
+        }
+      </hp-panel-card>
+    </section>
+
+    <section aria-label="Kurye geçmişi">
+      <hp-panel-card title="Geçmiş (mini zaman çizelgesi)">
+        @if (timeline().length) {
+          <ul class="hp-acdetail__timeline">
+            @for (ev of timeline(); track ev.id) {
+              <li>
+                <div class="hp-acdetail__timeline-top">
+                  <strong>{{ ev.orderId }}</strong>
+                  <span>{{ ev.atMs | date: 'HH:mm' }}</span>
+                </div>
+                <div class="hp-acdetail__timeline-bottom">{{ ev.label }}</div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="hp-acdetail__empty">Geçmiş kaydı bulunmuyor.</p>
+        }
+      </hp-panel-card>
+    </section>
+  }
+</div>

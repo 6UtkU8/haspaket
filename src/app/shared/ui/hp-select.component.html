@@ -1,0 +1,64 @@
+<div class="hp-select" [class.hp-select--disabled]="disabled()" [class.hp-select--open]="open()">
+  @if (label()) {
+    <span class="hp-field__label" [id]="labelId">{{ label() }}</span>
+  }
+  <div class="hp-select__control">
+    <button
+      type="button"
+      cdkOverlayOrigin
+      #origin="cdkOverlayOrigin"
+      class="hp-select__trigger"
+      [disabled]="disabled()"
+      [attr.aria-expanded]="open()"
+      [attr.aria-haspopup]="'listbox'"
+      [attr.aria-controls]="listboxId"
+      [attr.aria-labelledby]="label() ? labelId : null"
+      (click)="toggle()"
+      (keydown)="onTriggerKeydown($event)"
+    >
+      <span
+        class="hp-select__value"
+        [class.hp-select__value--placeholder]="!selectedLabel()"
+      >
+        {{ selectedLabel() || placeholder() }}
+      </span>
+      <svg class="hp-select__chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M7 10l5 5 5-5z" />
+      </svg>
+    </button>
+
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="origin"
+      [cdkConnectedOverlayOpen]="open()"
+      [cdkConnectedOverlayPositions]="dropdownPositions"
+      [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+      [cdkConnectedOverlayMatchWidth]="true"
+      [cdkConnectedOverlayViewportMargin]="8"
+      (overlayOutsideClick)="onOverlayOutsideClick()"
+      (detach)="close()"
+    >
+      <ul
+        class="hp-select__list"
+        role="listbox"
+        [id]="listboxId"
+        tabindex="-1"
+        (keydown)="onListKeydown($event)"
+      >
+        @for (opt of options(); track opt.value; let idx = $index) {
+          <li
+            class="hp-select__option"
+            [class.hp-select__option--active]="open() && idx === activeIndex()"
+            [class.hp-select__option--selected]="opt.value === value()"
+            role="option"
+            [attr.aria-selected]="opt.value === value()"
+            (click)="selectOption(opt); $event.stopPropagation()"
+            (mouseenter)="activeIndex.set(idx)"
+          >
+            {{ opt.label }}
+          </li>
+        }
+      </ul>
+    </ng-template>
+  </div>
+</div>

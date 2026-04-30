@@ -1,0 +1,9 @@
+/** Dar ekran: panel içerik kutusu ve sayfa sarmalayıcıları taşmasın */
+
+@media (max-width: 959.98px) {
+  .hp-shell-page {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}

@@ -1,0 +1,119 @@
+<div class="hp-afirmalar hp-shell-page">
+  <section class="hp-afirmalar__page-head" aria-label="Sayfa başlık alanı">
+    <h1 class="hp-afirmalar__title">Firmalar</h1>
+  </section>
+  @if (companies().length) {
+    <section class="hp-afirmalar__grid hp-shell-stagger" aria-label="Firmalar">
+      <hp-panel-card title="Firma listesi">
+        <div class="hp-afirmalar__table-wrap">
+          <table class="hp-afirmalar__table">
+            <thead>
+              <tr>
+                <th>Firma adı</th>
+                <th>Adres</th>
+                <th>Durum</th>
+                <th>Aksiyon</th>
+                <th>Detay</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (company of companies(); track company.id) {
+                <tr
+                  [class.hp-afirmalar__row--active]="selectedCompany()?.id === company.id"
+                  (click)="selectCompany(company.id)"
+                >
+                  <td>{{ company.name }}</td>
+                  <td>{{ company.address }}</td>
+                  <td>
+                    <span class="hp-afirmalar__badge" [class.hp-afirmalar__badge--passive]="!company.isActive">
+                      {{ company.isActive ? 'Aktif' : 'Pasif' }}
+                    </span>
+                  </td>
+                  <td class="hp-afirmalar__actions-cell" (click)="$event.stopPropagation()">
+                    @if (ops.isCompanyListStatusLocked(company.id)) {
+                      <span class="hp-afirmalar__decided" title="Değişiklik için firma detayına gidin">Karar verildi</span>
+                    } @else {
+                      <button type="button" class="hp-afirmalar__action-btn" (click)="requestListStatusChange($event, company)">
+                        {{ company.isActive ? 'Pasif Yap' : 'Aktif Yap' }}
+                      </button>
+                    }
+                  </td>
+                  <td>
+                    <a
+                      class="hp-afirmalar__detail-link"
+                      [routerLink]="['/admin/firmalar', company.id]"
+                      (click)="$event.stopPropagation()"
+                    >
+                      Detay
+                    </a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </hp-panel-card>
+
+      <hp-panel-card title="Firma detayı">
+        @if (selectedCompany(); as selected) {
+          <div class="hp-afirmalar__detail hp-afirmalar__detail--focus">
+            <div class="hp-afirmalar__detail-head">
+              <h3>{{ selected.name }}</h3>
+              <span class="hp-afirmalar__badge" [class.hp-afirmalar__badge--passive]="!selected.isActive">
+                {{ selected.isActive ? 'Aktif' : 'Pasif' }}
+              </span>
+            </div>
+            <div class="hp-afirmalar__detail-row">
+              <span>Firma</span>
+              <strong>{{ selected.name }}</strong>
+            </div>
+            <div class="hp-afirmalar__detail-row">
+              <span>Adres</span>
+              <strong>{{ selected.address }}</strong>
+            </div>
+            <div class="hp-afirmalar__detail-row">
+              <span>Telefon</span>
+              <strong>{{ selected.phone }}</strong>
+            </div>
+            <div class="hp-afirmalar__detail-row">
+              <span>Yetkili</span>
+              <strong>{{ selected.contactPerson || '-' }}</strong>
+            </div>
+            <div class="hp-afirmalar__detail-row">
+              <span>E-posta</span>
+              <strong>{{ selected.email || '-' }}</strong>
+            </div>
+          </div>
+        }
+      </hp-panel-card>
+    </section>
+  } @else {
+    <hp-panel-card>
+      <div class="hp-afirmalar__empty-state">
+        <span class="hp-afirmalar__empty-icon" aria-hidden="true">📄</span>
+        <p class="hp-afirmalar__empty">Gösterilecek firma bulunamadı.</p>
+      </div>
+    </hp-panel-card>
+  }
+</div>
+
+@if (listConfirm(); as lc) {
+  <div class="hp-fconfirm-layer" role="presentation" (click)="closeListConfirm()">
+    <div
+      class="hp-fconfirm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hp-firm-list-confirm-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="hp-firm-list-confirm-title" class="hp-fconfirm__title">Firma durumunu değiştirmek istiyor musunuz?</h2>
+      <p class="hp-fconfirm__text">
+        <strong>{{ lc.companyName }}</strong> firması {{ lc.targetActive ? 'Aktif' : 'Pasif' }} yapılacak.
+      </p>
+      <div class="hp-fconfirm__actions">
+        <button type="button" class="hp-fconfirm__btn hp-fconfirm__btn--ghost" (click)="closeListConfirm()">Vazgeç</button>
+        <button type="button" class="hp-fconfirm__btn hp-fconfirm__btn--primary" (click)="applyListConfirm()">Onayla</button>
+      </div>
+    </div>
+  </div>
+}

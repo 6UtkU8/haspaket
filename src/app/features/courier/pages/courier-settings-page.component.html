@@ -1,0 +1,154 @@
+<div class="hp-csettings hp-shell-page courier-settings-page">
+  <section class="hp-csettings__page-head" aria-label="Sayfa başlığı">
+    <h1 class="hp-csettings__title">Ayar Merkezi</h1>
+    <p class="hp-csettings__subtitle">Profil, teslimat ve güvenlik ayarlarını tek yerden yönetin.</p>
+  </section>
+
+  <section class="hp-csettings__layout hp-shell-stagger" aria-label="Ayar merkezi">
+    <hp-panel-card title="Ayar modülleri">
+      <div class="hp-csettings__menu">
+        <button
+          *ngFor="let module of modules"
+          type="button"
+          class="hp-csettings__menu-item"
+          [class.hp-csettings__menu-item--active]="activeModule() === module.id"
+          (click)="setActiveModule(module.id)"
+        >
+          <span class="hp-csettings__menu-icon">{{ module.icon }}</span>
+          <span class="hp-csettings__menu-meta">
+            <strong>{{ module.title }}</strong>
+            <small>{{ module.desc }}</small>
+          </span>
+        </button>
+      </div>
+      <div class="hp-csettings__menu-note">
+        <strong>İpucu</strong>
+        <p>Modül değiştirip düzenleme yaptıktan sonra sağ üstten değişiklikleri tek adımda kaydedebilirsiniz.</p>
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Ayar içerikleri">
+      <div class="hp-csettings__top-actions">
+        <button type="button" class="hp-csettings__btn hp-csettings__btn--ghost" (click)="reset()">Sıfırla</button>
+        <button type="button" class="hp-csettings__btn" (click)="save()">Kaydet</button>
+      </div>
+      <div class="hp-csettings__helper">
+        <strong>Yardımcı not</strong>
+        <span>Görünüm ve dil tercihleri anında uygulanır, kalıcı olması için `Kaydet` kullanın.</span>
+      </div>
+
+      <div *ngIf="activeModule() === 'profil'" class="hp-csettings__rows">
+          <label class="hp-csettings__row">
+            <span><strong>Ad soyad</strong><small>Panelde ve müşterilere görünen isim.</small></span>
+            <input
+              class="hp-csettings__locked-input"
+              [value]="settings.courierName()"
+              autocomplete="name"
+              readonly
+            />
+          </label>
+          <label class="hp-csettings__row">
+            <span><strong>E-posta</strong><small>Oturum ve destek iletişimi için kullanılır.</small></span>
+            <input
+              class="hp-csettings__locked-input"
+              type="email"
+              [value]="settings.courierEmail()"
+              autocomplete="email"
+              readonly
+            />
+          </label>
+          <div class="hp-csettings__row hp-csettings__row--readonly">
+            <span><strong>Yetki notu</strong><small>Ad soyad ve e-posta bilgileri yalnızca admin panelinden güncellenebilir.</small></span>
+            <span class="hp-csettings__value">Admin yetkisi gerekli</span>
+          </div>
+          <label class="hp-csettings__row">
+            <span><strong>Telefon</strong><small>Destek ve müşteri iletişim numarası.</small></span>
+            <input type="tel" [ngModel]="settings.courierPhone()" (ngModelChange)="settings.courierPhone.set($event)" autocomplete="tel" />
+          </label>
+          <label class="hp-csettings__row">
+            <span><strong>Araç tipi</strong><small>Teslimat aracı bilgisi.</small></span>
+            <select [ngModel]="settings.courierVehicle()" (ngModelChange)="settings.courierVehicle.set($event)">
+              <option value="Motosiklet">Motosiklet</option>
+              <option value="Bisiklet">Bisiklet</option>
+              <option value="Arac">Araç</option>
+            </select>
+          </label>
+      </div>
+
+      <div *ngIf="activeModule() === 'teslimat'" class="hp-csettings__rows">
+          <label class="hp-csettings__row hp-csettings__row--toggle">
+            <span><strong>Uygulamayı çevrim içi başlat</strong><small>Panele girince kurye otomatik aktif olsun.</small></span>
+            <input type="checkbox" [ngModel]="settings.autoOnline()" (ngModelChange)="settings.autoOnline.set($event)" />
+          </label>
+          <label class="hp-csettings__row hp-csettings__row--toggle">
+            <span><strong>Canlı konum paylaşımı</strong><small>Operasyon ekranlarında konum verisi paylaşılsın.</small></span>
+            <input type="checkbox" [ngModel]="settings.shareLiveLocation()" (ngModelChange)="settings.shareLiveLocation.set($event)" />
+          </label>
+          <label class="hp-csettings__row">
+            <span><strong>Konum hassasiyeti</strong><small>Harita üzerinde paylaşılacak detay seviyesi.</small></span>
+            <select [ngModel]="settings.locationPrecision()" (ngModelChange)="onLocationPrecisionPick($event)">
+              <option value="high">Tam konum</option>
+              <option value="balanced">Dengeli</option>
+              <option value="district">İlçe seviyesi</option>
+            </select>
+          </label>
+          <label class="hp-csettings__row hp-csettings__row--toggle">
+            <span><strong>Müşteriye telefonumu göster</strong><small>Gerekli durumlarda doğrudan arama yapılabilsin.</small></span>
+            <input type="checkbox" [ngModel]="settings.showPhone()" (ngModelChange)="settings.showPhone.set($event)" />
+          </label>
+      </div>
+
+      <div *ngIf="activeModule() === 'bildirim'" class="hp-csettings__rows">
+          <label class="hp-csettings__row hp-csettings__row--toggle">
+            <span><strong>Yeni paket sesi</strong><small>Yeni görev geldiğinde ses çalar.</small></span>
+            <input type="checkbox" [ngModel]="settings.taskSound()" (ngModelChange)="settings.taskSound.set($event)" />
+          </label>
+          <label class="hp-csettings__row hp-csettings__row--toggle">
+            <span><strong>Titreşim bildirimi</strong><small>Titreşimli uyarı etkinleştirilir.</small></span>
+            <input type="checkbox" [ngModel]="settings.vibration()" (ngModelChange)="settings.vibration.set($event)" />
+          </label>
+          <label class="hp-csettings__row hp-csettings__row--toggle">
+            <span><strong>Mola hatırlatıcısı</strong><small>Mola zamanı yaklaşınca uyarır.</small></span>
+            <input type="checkbox" [ngModel]="settings.breakReminder()" (ngModelChange)="settings.breakReminder.set($event)" />
+          </label>
+      </div>
+
+      <div *ngIf="activeModule() === 'gorunum'" class="hp-csettings__rows">
+          <label class="hp-csettings__row hp-csettings__row--toggle">
+            <span><strong>Kompakt paket listesi</strong><small>Görevler daha sık görüntülenir.</small></span>
+            <input type="checkbox" [ngModel]="settings.compactTasks()" (ngModelChange)="settings.compactTasks.set($event)" />
+          </label>
+          <label class="hp-csettings__row">
+            <span><strong>Dil tercihi</strong><small>Panel dilini seçin.</small></span>
+            <select [ngModel]="settings.language()" (ngModelChange)="onLanguagePick($event)">
+              <option value="tr">Türkçe</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+          <label class="hp-csettings__row">
+            <span><strong>Tema</strong><small>Panel renk temasını seçin.</small></span>
+            <select [ngModel]="settings.themePreference()" (ngModelChange)="onThemePick($event)">
+              <option value="light">Açık</option>
+              <option value="dark">Koyu</option>
+              <option value="system">Sistem</option>
+            </select>
+          </label>
+      </div>
+
+      <div *ngIf="activeModule() === 'guvenlik'" class="hp-csettings__rows">
+          <label class="hp-csettings__row">
+            <span><strong>Mevcut şifre</strong><small>Doğrulama için mevcut şifreniz.</small></span>
+            <input type="password" [ngModel]="currentPassword()" (ngModelChange)="currentPassword.set($event)" autocomplete="current-password" />
+          </label>
+          <label class="hp-csettings__row">
+            <span><strong>Yeni şifre</strong><small>Değiştirmek istediğiniz yeni şifre.</small></span>
+            <input type="password" [ngModel]="newPassword()" (ngModelChange)="newPassword.set($event)" autocomplete="new-password" />
+          </label>
+          <div class="hp-csettings__row hp-csettings__row--readonly">
+            <span><strong>Kayıt davranışı</strong><small>Şifre değişikliği yalnızca `Kaydet` ile doğrulanır.</small></span>
+            <span class="hp-csettings__value">Demo doğrulama aktif</span>
+          </div>
+      </div>
+    </hp-panel-card>
+  </section>
+</div>

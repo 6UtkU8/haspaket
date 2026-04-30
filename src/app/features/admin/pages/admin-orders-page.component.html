@@ -1,0 +1,309 @@
+<div class="hp-aorders hp-shell-page">
+  <section class="hp-aorders__page-head" aria-label="Sayfa başlık alanı">
+    <h1 class="hp-aorders__title">Siparişler</h1>
+  </section>
+  <section class="hp-aorders__grid hp-shell-stagger" aria-label="Sipariş operasyonları">
+    <hp-panel-card title="Siparişler">
+      <p class="hp-aorders__section-note">
+        Liste solda, seçili sipariş sağda. Yoldaki siparişi başka kuryeye çekebilir, adres / ücret / iptali yönetebilirsiniz.
+      </p>
+      <div class="hp-aorders__table-wrap">
+        <table class="hp-aorders__table">
+          <thead>
+            <tr>
+              <th scope="col">Sipariş / Müşteri</th>
+              <th scope="col">Durum</th>
+              <th scope="col">Kurye</th>
+              <th scope="col">Geçen süre</th>
+              <th scope="col">Detay</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orders(); track order.id) {
+              <tr
+                class="hp-aorders__row"
+                [class.hp-aorders__row--active]="selectedOrder()?.id === order.id"
+                (click)="selectOrder(order.id)"
+              >
+                <td>
+                  <div class="hp-aorders__id">{{ order.id }}</div>
+                  <div class="hp-aorders__route">{{ order.customer }}</div>
+                </td>
+                <td>
+                  <span class="hp-aorders__pill" [class]="statusClass(order.status)">{{
+                    ops.statusLabel(order.status)
+                  }}</span>
+                </td>
+                <td>{{ ops.courierName(order.assignedCourierId) }}</td>
+                <td class="hp-aorders__time">{{ ops.elapsedFor(order) }}</td>
+                <td>
+                  <a class="hp-aorders__detail-link" [routerLink]="['/admin/siparisler', order.id]">Detay</a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Sipariş detayı & müdahale">
+      @if (selectedOrder(); as order) {
+        <div class="hp-aorders__detail hp-aorders__detail--focus">
+          <div class="hp-aorders__detail-head">
+            <h3 class="hp-aorders__detail-id">{{ order.id }}</h3>
+            <span class="hp-aorders__pill" [class]="statusClass(order.status)">{{
+              ops.statusLabel(order.status)
+            }}</span>
+          </div>
+
+          <div class="hp-aorders__meta">
+            <div class="hp-aorders__meta-row">
+              <span class="hp-aorders__meta-label">Müşteri</span>
+              <span class="hp-aorders__meta-value">{{ order.customer }}</span>
+            </div>
+            <div class="hp-aorders__meta-row">
+              <span class="hp-aorders__meta-label">Rota</span>
+              <span class="hp-aorders__meta-value">{{ order.from }} → {{ order.to }}</span>
+            </div>
+            <div class="hp-aorders__meta-row">
+              <span class="hp-aorders__meta-label">Teslimat ücreti (₺)</span>
+              <span class="hp-aorders__meta-value">{{
+                order.deliveryFeeTry != null ? order.deliveryFeeTry + ' ₺' : '—'
+              }}</span>
+            </div>
+            <div class="hp-aorders__meta-row hp-aorders__meta-row--stack">
+              <span class="hp-aorders__meta-label">Mahalle bölgeleri</span>
+              <span class="hp-aorders__meta-value hp-aorders__zone-hint">{{ selectedZoneHints() }}</span>
+            </div>
+            <div class="hp-aorders__meta-row">
+              <span class="hp-aorders__meta-label">Kurye</span>
+              <span class="hp-aorders__meta-value">{{ selectedCourierName() }}</span>
+            </div>
+            <div class="hp-aorders__meta-row">
+              <span class="hp-aorders__meta-label">Aşama</span>
+              <span class="hp-aorders__meta-value">{{ ops.lifecycleLabel(order) }}</span>
+            </div>
+            <div class="hp-aorders__meta-row">
+              <span class="hp-aorders__meta-label">Geçen süre</span>
+              <span class="hp-aorders__meta-value hp-aorders__time">{{ ops.elapsedFor(order) }}</span>
+            </div>
+          </div>
+
+          @if (canAdminCancelOrPatch()) {
+            <div class="hp-aorders__intervention" aria-labelledby="hp-aorders-intervention-title">
+              <h4 id="hp-aorders-intervention-title" class="hp-aorders__intervention-title">
+                Tam müdahale · kayıt alanları
+              </h4>
+              <p class="hp-aorders__assign-hint">
+                İstersen teslim adresini yoldayken bile düzelt; ücreti güncelle. Kayıtlar zaman çizgisine yazılır.
+              </p>
+              <div class="hp-aorders__intervention-grid">
+                <label class="hp-aorders__int-field">
+                  <span>Müşteri adı</span>
+                  <input type="text" [ngModel]="patchCustomer()" (ngModelChange)="patchCustomer.set($event)" />
+                </label>
+                <label class="hp-aorders__int-field">
+                  <span>Telefon</span>
+                  <input type="tel" [ngModel]="patchPhone()" (ngModelChange)="patchPhone.set($event)" />
+                </label>
+                <label class="hp-aorders__int-field">
+                  <span>Çıkış (pickup özeti)</span>
+                  <input type="text" [ngModel]="patchFrom()" (ngModelChange)="patchFrom.set($event)" />
+                </label>
+                <label class="hp-aorders__int-field hp-aorders__int-field--wide">
+                  <span>Teslimat adresi / mahalle özeti</span>
+                  <input type="text" [ngModel]="patchTo()" (ngModelChange)="patchTo.set($event)" />
+                </label>
+                <label class="hp-aorders__int-field">
+                  <span>Ücret (₺) — boş bırakma = dokunma</span>
+                  <input
+                    inputmode="decimal"
+                    placeholder="Örn: 149.90"
+                    [ngModel]="patchFeeRaw()"
+                    (ngModelChange)="patchFeeRaw.set($event)"
+                  />
+                </label>
+              </div>
+              <div class="hp-aorders__intervention-actions">
+                <button type="button" class="hp-aorders__btn hp-aorders__btn--primary" (click)="applyPatches()">
+                  Kayıdı güncelle
+                </button>
+                <button type="button" class="hp-aorders__btn hp-aorders__btn--ghost" (click)="clearDeliveryFee()">
+                  Ücreti kaldır
+                </button>
+              </div>
+            </div>
+          }
+
+          <div class="hp-aorders__zone-auto">
+            <h4>Bölgeye göre otomatik atama</h4>
+            <p class="hp-aorders__assign-hint">
+              Çıkış / teslimat metnine göre eşleşen mahalle kümesinden çevrimiçi ilk uygun kurye seçilir (
+              ayarları aşağıda düzenleyebilirsiniz).
+            </p>
+            @if (suggestedCourierLabel()) {
+              <p class="hp-aorders__suggest-line">
+                Şu an önerilen: <strong>{{ suggestedCourierLabel() }}</strong>
+              </p>
+            }
+            <button
+              type="button"
+              class="hp-aorders__btn hp-aorders__btn--accent"
+              (click)="assignByDistrictZone()"
+              [disabled]="!selectedOrder() || selectedOrder()?.status === 'iptal' || selectedOrder()?.status === 'teslim-edildi'"
+            >
+              Bölgeye göre ata
+            </button>
+          </div>
+
+          @if (canAdminReassign()) {
+            <div class="hp-aorders__assign">
+              <label for="assign-courier">Manuel kurye ata / yoldaki işi yeniden ata</label>
+              <div class="hp-aorders__assign-row">
+                <select
+                  id="assign-courier"
+                  [ngModel]="selectedCourierId()"
+                  (ngModelChange)="selectedCourierId.set($event)"
+                >
+                  <option value="">Kurye seçin</option>
+                  @for (courier of couriers(); track courier.id) {
+                    <option [value]="courier.id">{{ courier.name }}</option>
+                  }
+                </select>
+                <button type="button" [disabled]="!selectedCourierId()" (click)="assignSelected()">Ata</button>
+              </div>
+              <p class="hp-aorders__assign-hint">{{ assignHint() }}</p>
+            </div>
+          } @else {
+            <p class="hp-aorders__assign-hint">{{ assignHint() }}</p>
+          }
+
+          @if (canAdminCancelOrPatch()) {
+            <div class="hp-aorders__cancel-panel">
+              <h4>Yönetim iptali</h4>
+              <label class="hp-aorders__int-field hp-aorders__int-field--wide">
+                <span>İptal notu (opsiyonel)</span>
+                <input type="text" [ngModel]="cancelReason()" (ngModelChange)="cancelReason.set($event)" />
+              </label>
+              <button type="button" class="hp-aorders__btn hp-aorders__btn--danger" (click)="cancelOrder()">
+                Siparişi iptal et
+              </button>
+            </div>
+          }
+
+          <div class="hp-aorders__timeline">
+            <h4>Zaman çizelgesi</h4>
+            @if (timeline().length) {
+              <ul role="list">
+                @for (ev of timeline(); track ev.id) {
+                  <li>
+                    <div class="hp-aorders__timeline-top">
+                      <span>{{ ev.label }}</span>
+                      <span class="hp-aorders__timeline-status">{{ ops.statusLabel(ev.type) }}</span>
+                    </div>
+                    <div class="hp-aorders__timeline-meta">
+                      <span class="hp-aorders__timeline-actor">{{ ev.actor }}</span>
+                      <time [attr.datetime]="ev.atMs | date: 'yyyy-MM-ddTHH:mm:ss'">
+                        {{ ev.atMs | date: 'dd.MM.yyyy HH:mm:ss' }}
+                      </time>
+                    </div>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="hp-aorders__empty">Bu sipariş için henüz zaman çizelgesi olayı yok.</p>
+            }
+          </div>
+        </div>
+      } @else {
+        <p class="hp-aorders__empty">Detay görmek için sipariş seçin.</p>
+      }
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-aorders__zones-grid hp-shell-stagger" aria-label="Mahalle bölgesi ayarları">
+    <hp-panel-card title="Mahalle bölgeleri (birbirine bağlı mahalleler)">
+      <p class="hp-aorders__section-note">
+        Aynı bölgede birden fazla mahalle yazın; teslim / çıkış metninde geçtiğinde hep aynı bölge eşlemesi yapılır. Harita
+        pinleri de bölgelenir.
+      </p>
+      @for (z of districtZones(); track z.id) {
+        <div class="hp-aorders__zone-row">
+          <div class="hp-aorders__zone-head">
+            <strong>{{ z.name }}</strong>
+            <span class="hp-aorders__zone-id">{{ z.id }}</span>
+          </div>
+          <div class="hp-aorders__chips">
+            @for (n of z.neighborhoods; track $index + n) {
+              <span class="hp-aorders__chip">{{ n }}</span>
+            }
+          </div>
+          <div class="hp-aorders__zone-append">
+            <input
+              type="text"
+              placeholder="Yeni mahalle adı"
+              [value]="zoneDraft(z.id)"
+              (input)="onZoneDraftInput(z.id, $any($event.target).value)"
+            />
+            <button type="button" class="hp-aorders__btn hp-aorders__btn--ghost" (click)="appendNeighborhood(z.id)">
+              Ekle
+            </button>
+          </div>
+        </div>
+      }
+      <div class="hp-aorders__new-zone">
+        <h4>Yeni bölge</h4>
+        <label class="hp-aorders__int-field hp-aorders__int-field--wide">
+          <span>Başlık</span>
+          <input type="text" [ngModel]="newZoneName()" (ngModelChange)="newZoneName.set($event)" />
+        </label>
+        <label class="hp-aorders__int-field hp-aorders__int-field--wide">
+          <span>Mahalleler — virgül veya ; ile ayırın</span>
+          <textarea
+            rows="2"
+            [ngModel]="newZoneNeighbors()"
+            (ngModelChange)="newZoneNeighbors.set($event)"
+          ></textarea>
+        </label>
+        <button type="button" class="hp-aorders__btn hp-aorders__btn--primary" (click)="addDistrictZoneSubmit()">
+          Bölgeyi oluştur
+        </button>
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Kurye — bölge eşlemesi">
+      <p class="hp-aorders__section-note">
+        Her kuryede hangi bölgeleri otomatik atamaya dahil edeceğini işaretleyin.
+      </p>
+      <div class="hp-aorders__zc-wrap">
+        <table class="hp-aorders__zc-table">
+          <thead>
+            <tr>
+              <th scope="col">Kurye</th>
+              @for (z of districtZones(); track z.id) {
+                <th scope="col" [attr.title]="z.name">{{ z.name }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of couriers(); track c.id) {
+              <tr>
+                <td>{{ c.name }}</td>
+                @for (z of districtZones(); track z.id) {
+                  <td class="hp-aorders__zc-cell">
+                    <input
+                      type="checkbox"
+                      [checked]="courierHasZone(c, z.id)"
+                      (change)="toggleCourierZone(c, z.id, $any($event.target).checked)"
+                      [attr.aria-label]="c.name + ' — ' + z.name"
+                    />
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </hp-panel-card>
+  </section>
+</div>

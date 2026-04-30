@@ -1,0 +1,91 @@
+/**
+ * Panel shell — hafif giriş animasyonları (firma / admin / kurye).
+ * prefers-reduced-motion: animasyonlar kapalı.
+ */
+
+@keyframes hp-shell-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hp-shell-page {
+    animation: hp-shell-enter 0.42s var(--hp-ease-out) both;
+  }
+
+  .hp-shell-stagger > * {
+    animation: hp-shell-enter 0.36s var(--hp-ease-out) both;
+  }
+
+  .hp-shell-stagger > *:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .hp-shell-stagger > *:nth-child(2) {
+    animation-delay: 40ms;
+  }
+  .hp-shell-stagger > *:nth-child(3) {
+    animation-delay: 80ms;
+  }
+  .hp-shell-stagger > *:nth-child(4) {
+    animation-delay: 120ms;
+  }
+  .hp-shell-stagger > *:nth-child(5) {
+    animation-delay: 160ms;
+  }
+  .hp-shell-stagger > *:nth-child(6) {
+    animation-delay: 200ms;
+  }
+  .hp-shell-stagger > *:nth-child(7) {
+    animation-delay: 240ms;
+  }
+  .hp-shell-stagger > *:nth-child(8) {
+    animation-delay: 280ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-shell-page,
+  .hp-shell-stagger > * {
+    animation: none !important;
+  }
+}
+
+/* Ortak çıkış — ghost, premium sade */
+.hp-shell-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hp-panel-field-gap);
+  width: 100%;
+  margin: 0;
+  padding: var(--hp-panel-logout-pad-y) var(--hp-panel-logout-pad-x);
+  border: 1px solid var(--hp-color-border);
+  border-radius: var(--hp-radius-sm);
+  background: rgba(0, 0, 0, 0.15);
+  color: var(--hp-color-text-muted);
+  font-size: var(--hp-panel-logout-font);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    color var(--hp-transition-fast),
+    border-color var(--hp-transition-fast),
+    background var(--hp-transition-fast);
+}
+
+.hp-shell-logout:hover {
+  color: var(--hp-color-text);
+  border-color: color-mix(in srgb, #f87171 45%, var(--hp-color-border));
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.hp-shell-logout:focus-visible {
+  outline: 2px solid var(--hp-color-primary);
+  outline-offset: 2px;
+}

@@ -1,0 +1,80 @@
+.hp-application {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: var(--hp-color-bg);
+}
+
+.hp-application__card {
+  width: min(100%, 34rem);
+  border-radius: var(--hp-radius-md);
+  border: 1px solid var(--hp-color-border);
+  background: var(--hp-color-surface);
+  padding: 1.2rem;
+  box-shadow: var(--hp-shadow-card);
+}
+
+.hp-application__card h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.hp-application__card > p {
+  margin: 0.45rem 0 0;
+  color: var(--hp-color-text-muted);
+  font-size: var(--hp-panel-body-sm);
+}
+
+.hp-application__form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.hp-application__form label span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--hp-color-text-muted);
+  font-size: var(--hp-panel-caption);
+}
+
+.hp-application__form input {
+  width: 100%;
+  min-height: 2.3rem;
+  border-radius: var(--hp-radius-sm);
+  border: 1px solid var(--hp-color-border);
+  background: var(--hp-color-input-bg);
+  color: var(--hp-color-text);
+  padding: 0 0.65rem;
+  font: inherit;
+}
+
+.hp-application__form button {
+  min-height: 2.35rem;
+  border-radius: var(--hp-btn-radius);
+  border: 1px solid color-mix(in srgb, var(--hp-color-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--hp-color-primary) 12%, transparent);
+  color: var(--hp-color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.hp-application__form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.hp-application__success {
+  margin: 0;
+  font-size: var(--hp-panel-body-sm);
+  color: var(--hp-color-primary);
+}
+
+.hp-application__back {
+  display: inline-block;
+  margin-top: 0.9rem;
+  font-size: var(--hp-panel-body-sm);
+  color: var(--hp-color-text-muted);
+  text-decoration: none;
+}

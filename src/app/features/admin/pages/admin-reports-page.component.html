@@ -1,0 +1,119 @@
+<div class="hp-areports hp-shell-page">
+  <section class="hp-areports__filters" aria-label="Tarih filtresi">
+    <hp-panel-card title="Dönem seçimi">
+      <div class="hp-areports__filter-buttons">
+        <button type="button" [class.hp-areports__btn--active]="range() === 'today'" (click)="setRange('today')">
+          Günlük
+        </button>
+        <button
+          type="button"
+          [class.hp-areports__btn--active]="range() === 'weekly'"
+          (click)="setRange('weekly')"
+        >
+          Haftalık
+        </button>
+        <button
+          type="button"
+          [class.hp-areports__btn--active]="range() === 'monthly'"
+          (click)="setRange('monthly')"
+        >
+          Aylık
+        </button>
+      </div>
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-areports__kpis hp-shell-stagger" aria-label="Rapor KPI">
+    @for (k of kpis(); track k.key) {
+      <hp-kpi-card [label]="k.label" [value]="k.value" [hint]="k.hint" [icon]="k.icon" [isCurrency]="false" />
+    }
+  </section>
+
+  <section aria-label="Grafik">
+    <hp-panel-card title="Sipariş trendi (mock chart)">
+      <div class="hp-areports__chart">
+        @for (bar of chartBars(); track bar.label) {
+          <div class="hp-areports__bar-col">
+            <div class="hp-areports__bar" [style.height.%]="bar.height" [attr.title]="bar.value"></div>
+            <span>{{ bar.label }}</span>
+          </div>
+        }
+      </div>
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-areports__grid-two hp-shell-stagger" aria-label="Durum ve performans">
+    <hp-panel-card title="Durum dağılımı">
+      <div class="hp-areports__status-list">
+        @for (item of statusDistribution(); track item.key) {
+          <div class="hp-areports__status-item">
+            <div class="hp-areports__status-head">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.count }} ({{ item.ratio }}%)</strong>
+            </div>
+            <div class="hp-areports__status-track">
+              <div class="hp-areports__status-fill" [style.width.%]="item.ratio"></div>
+            </div>
+          </div>
+        }
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Kurye performans özeti">
+      <div class="hp-areports__mini-table">
+        <div class="hp-areports__mini-row hp-areports__mini-row--head">
+          <span>Kurye</span>
+          <span>Teslim</span>
+          <span>Aktif</span>
+        </div>
+        @for (item of courierPerformance(); track item.id) {
+          <div class="hp-areports__mini-row">
+            <span>{{ item.name }}</span>
+            <span>{{ item.delivered }}</span>
+            <span>{{ item.activeOrders }}</span>
+          </div>
+        }
+      </div>
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-areports__grid-two hp-shell-stagger" aria-label="Firma performansı ve aktiviteler">
+    <hp-panel-card title="Firma performans özeti">
+      <div class="hp-areports__mini-table">
+        <div class="hp-areports__mini-row hp-areports__mini-row--head hp-areports__mini-row--firma">
+          <span>Firma</span>
+          <span>Sipariş</span>
+          <span>Teslim</span>
+          <span>Puan</span>
+        </div>
+        @for (item of companyPerformance(); track item.id) {
+          <div class="hp-areports__mini-row hp-areports__mini-row--firma">
+            <span>{{ item.name }}</span>
+            <span>{{ item.totalOrders }}</span>
+            <span>{{ item.deliveredOrders }}</span>
+            <span>{{ item.score }}</span>
+          </div>
+        }
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Son aktivite raporu">
+      <div class="hp-areports__mini-table">
+        <div class="hp-areports__mini-row hp-areports__mini-row--head hp-areports__mini-row--activity">
+          <span>Saat</span>
+          <span>Sipariş</span>
+          <span>İşlem</span>
+          <span>Rol</span>
+        </div>
+        @for (item of recentActivity(); track item.id) {
+          <div class="hp-areports__mini-row hp-areports__mini-row--activity">
+            <span>{{ formatTime(item.atMs) }}</span>
+            <span>{{ item.orderId }}</span>
+            <span>{{ item.label }}</span>
+            <span>{{ item.actor }}</span>
+          </div>
+        }
+      </div>
+    </hp-panel-card>
+  </section>
+</div>

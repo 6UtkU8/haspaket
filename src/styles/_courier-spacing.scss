@@ -1,0 +1,31 @@
+/**
+ * Kurye paneli — boşluklar (.hp-courier altı; admin/firma etkilenmez).
+ * hp-panel-card / hp-kpi-card paylaşımlı bileşen; yalnızca kurye ağacında padding sıkılığı.
+ */
+
+.hp-courier hp-panel-card .hp-pcard__head {
+  padding: var(--space-5);
+  gap: var(--space-3);
+}
+
+.hp-courier hp-panel-card .hp-pcard__head--toolbar-only {
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-5);
+}
+
+.hp-courier hp-panel-card .hp-pcard__head + .hp-pcard__body {
+  padding-top: var(--space-5);
+}
+
+.hp-courier hp-panel-card .hp-pcard__body {
+  padding: var(--space-5);
+}
+
+.hp-courier hp-kpi-card .hp-kpi {
+  padding: var(--space-5);
+  gap: var(--space-3);
+}
+
+.hp-courier hp-kpi-card .hp-kpi__top {
+  gap: var(--space-3);
+}

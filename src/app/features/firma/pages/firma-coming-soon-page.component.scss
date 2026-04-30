@@ -1,0 +1,42 @@
+.hp-fsoon {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+  max-width: var(--hp-content-max);
+  margin: 0 auto;
+}
+
+.hp-fsoon__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.hp-fsoon__link {
+  color: var(--hp-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hp-fsoon__link:hover {
+  filter: brightness(1.08);
+}
+
+.hp-fsoon__badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  color: var(--hp-color-primary);
+  background: var(--hp-color-primary-soft);
+  border: 1px solid color-mix(in srgb, var(--hp-color-primary) 28%, transparent);
+}
+
+.hp-fsoon__hint {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--hp-color-text-muted);
+}

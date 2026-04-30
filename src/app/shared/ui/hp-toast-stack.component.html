@@ -1,0 +1,10 @@
+<div class="hp-toast-stack" aria-live="polite">
+  @for (item of toast.items(); track item.id) {
+    <div class="hp-toast" role="status">
+      <strong class="hp-toast__title">{{ item.title }}</strong>
+      @if (item.subtitle) {
+        <span class="hp-toast__sub">{{ item.subtitle }}</span>
+      }
+    </div>
+  }
+</div>

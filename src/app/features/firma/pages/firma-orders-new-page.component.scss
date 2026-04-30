@@ -1,0 +1,75 @@
+.hp-forders-new {
+  max-width: var(--hp-content-max);
+  margin: 0 auto;
+}
+
+.hp-forders-new__form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.hp-forders-new__form label span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--hp-color-text-muted);
+  font-size: var(--hp-panel-caption);
+}
+
+.hp-forders-new__form input,
+.hp-forders-new__form textarea {
+  width: 100%;
+  border-radius: var(--hp-radius-sm);
+  border: 1px solid var(--hp-color-border);
+  background: var(--hp-color-input-bg);
+  color: var(--hp-color-text);
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
+.hp-forders-new__form input {
+  min-height: 2.3rem;
+}
+
+.hp-forders-new__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hp-forders-new__actions button {
+  min-height: 2.2rem;
+  border-radius: var(--hp-btn-radius);
+  border: 1px solid color-mix(in srgb, var(--hp-color-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--hp-color-primary) 12%, transparent);
+  color: var(--hp-color-text);
+  padding: 0 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hp-forders-new__actions button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.hp-forders-new__actions a {
+  color: var(--hp-color-primary);
+  text-decoration: none;
+  font-size: var(--hp-panel-body-sm);
+}
+
+.hp-forders-new__success {
+  margin: 0.2rem 0 0;
+  color: var(--hp-color-primary);
+  font-size: var(--hp-panel-body-sm);
+}
+
+.hp-forders-new__back {
+  margin: 0.35rem 0 0;
+  font-size: var(--hp-panel-body-sm);
+}
+
+.hp-forders-new__back a {
+  color: var(--hp-color-primary);
+  text-decoration: none;
+}

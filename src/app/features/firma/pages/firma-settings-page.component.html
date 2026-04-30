@@ -1,0 +1,185 @@
+<div class="hp-fsettings hp-shell-page firma-settings-page">
+  <section class="hp-fsettings__layout hp-shell-stagger" aria-label="Firma ayarları">
+    <hp-panel-card title="Ayar modülleri">
+      <div class="hp-fsettings__menu">
+        @for (module of modules; track module.id) {
+          <button
+            type="button"
+            class="hp-fsettings__menu-item"
+            [class.hp-fsettings__menu-item--active]="activeModule() === module.id"
+            (click)="setActiveModule(module.id)"
+          >
+            <span class="hp-fsettings__menu-icon">{{ module.icon }}</span>
+            <span class="hp-fsettings__menu-meta">
+              <strong>{{ module.title }}</strong>
+              <small>{{ module.desc }}</small>
+            </span>
+          </button>
+        }
+      </div>
+      <div class="hp-fsettings__menu-note">
+        <strong>İpucu</strong>
+        <p>Modüller arasında geçiş yapıp değişikliklerinizi tamamladıktan sonra sağ üstten tek seferde kaydedebilirsiniz.</p>
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Ayar içerikleri">
+      <div class="hp-fsettings__top-actions">
+        <button type="button" class="hp-fsettings__btn hp-fsettings__btn--ghost" (click)="resetAll()">Sıfırla</button>
+        <button type="button" class="hp-fsettings__btn" (click)="saveAll()">Kaydet</button>
+      </div>
+      @if (saveMessage()) {
+        <p class="hp-fsettings__feedback">{{ saveMessage() }}</p>
+      }
+      <div class="hp-fsettings__helper">
+        <strong>Yardımcı not</strong>
+        <span>Tema ve dil tercihi anında uygulanır, diğer değişikliklerin kalıcı olması için `Kaydet` kullanın.</span>
+      </div>
+
+      @if (activeModule() === 'genel') {
+        <div class="hp-fsettings__rows">
+          <label class="hp-fsettings__row">
+            <span><strong>Firma adı</strong><small>Panel başlığında ve siparişlerde görünür.</small></span>
+            <input [ngModel]="settings().genel.companyName" (ngModelChange)="updateGenel('companyName', $event)" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Vergi numarası</strong><small>Faturalandırma ve resmî kayıt bilgisi.</small></span>
+            <input [ngModel]="settings().genel.taxNumber" (ngModelChange)="updateGenel('taxNumber', $event)" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Ticaret sicil no</strong><small>Kurumsal kimlik doğrulama alanı.</small></span>
+            <input [ngModel]="settings().genel.tradeRegistryNo" (ngModelChange)="updateGenel('tradeRegistryNo', $event)" />
+          </label>
+        </div>
+      }
+
+      @if (activeModule() === 'iletisim') {
+        <div class="hp-fsettings__rows">
+          <label class="hp-fsettings__row">
+            <span><strong>Yetkili kişi</strong><small>Operasyonla iletişime geçilecek ana sorumlu.</small></span>
+            <input [ngModel]="settings().iletisim.contactName" (ngModelChange)="updateIletisim('contactName', $event)" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>E-posta</strong><small>Sipariş ve sistem özetleri bu adrese gelir.</small></span>
+            <input type="email" [ngModel]="settings().iletisim.contactEmail" (ngModelChange)="updateIletisim('contactEmail', $event)" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Telefon</strong><small>Kurye ve destek ekibi için iletişim hattı.</small></span>
+            <input [ngModel]="settings().iletisim.contactPhone" (ngModelChange)="updateIletisim('contactPhone', $event)" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Adres</strong><small>Paket alım ve resmî lokasyon bilgisi.</small></span>
+            <input [ngModel]="settings().iletisim.address" (ngModelChange)="updateIletisim('address', $event)" />
+          </label>
+        </div>
+      }
+
+      @if (activeModule() === 'bildirim') {
+        <div class="hp-fsettings__rows">
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>E-posta bildirimleri</strong><small>Sipariş ve özetler e-posta ile iletilsin.</small></span>
+            <input type="checkbox" [ngModel]="settings().bildirim.emailNotif" (ngModelChange)="updateBildirim('emailNotif', $event)" />
+          </label>
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>SMS bildirimleri</strong><small>Kritik durumlar SMS ile paylaşılsın.</small></span>
+            <input type="checkbox" [ngModel]="settings().bildirim.smsNotif" (ngModelChange)="updateBildirim('smsNotif', $event)" />
+          </label>
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>Uygulama bildirimleri</strong><small>Panel içi anlık bildirimleri etkinleştirir.</small></span>
+            <input type="checkbox" [ngModel]="settings().bildirim.pushNotif" (ngModelChange)="updateBildirim('pushNotif', $event)" />
+          </label>
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>Kurye atama bildirimi</strong><small>Kurye atandığında işletme haberdar edilir.</small></span>
+            <input type="checkbox" [ngModel]="settings().bildirim.orderAssignedNotif" (ngModelChange)="updateBildirim('orderAssignedNotif', $event)" />
+          </label>
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>Geciken sipariş bildirimi</strong><small>SLA aşım riski olan siparişler öne çıkar.</small></span>
+            <input type="checkbox" [ngModel]="settings().bildirim.orderDelayedNotif" (ngModelChange)="updateBildirim('orderDelayedNotif', $event)" />
+          </label>
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>İptal sipariş bildirimi</strong><small>İptal edilen siparişler için uyarı üretir.</small></span>
+            <input type="checkbox" [ngModel]="settings().bildirim.orderCancelledNotif" (ngModelChange)="updateBildirim('orderCancelledNotif', $event)" />
+          </label>
+        </div>
+      }
+
+      @if (activeModule() === 'operasyon') {
+        <div class="hp-fsettings__rows">
+          <label class="hp-fsettings__row">
+            <span><strong>Mesai başlangıcı</strong><small>Yeni sipariş kabulünün açıldığı saat.</small></span>
+            <input type="time" [ngModel]="settings().operasyon.workingStart" (ngModelChange)="updateOperasyon('workingStart', $event)" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Mesai bitişi</strong><small>Yeni sipariş kabulünün kapandığı saat.</small></span>
+            <input type="time" [ngModel]="settings().operasyon.workingEnd" (ngModelChange)="updateOperasyon('workingEnd', $event)" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Maksimum teslimat yarıçapı (km)</strong><small>Servis verilecek en uzak mesafe.</small></span>
+            <input
+              type="number"
+              [ngModel]="settings().operasyon.maxDeliveryRadius"
+              (ngModelChange)="updateOperasyon('maxDeliveryRadius', $event)"
+            />
+          </label>
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>Aynı gün teslimat aktif</strong><small>Uygun siparişlerde hızlı teslimat akışını açar.</small></span>
+            <input type="checkbox" [ngModel]="settings().operasyon.sameDayDelivery" (ngModelChange)="updateOperasyon('sameDayDelivery', $event)" />
+          </label>
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>Otomatik kurye atama</strong><small>Uygun siparişleri sistem otomatik atar.</small></span>
+            <input type="checkbox" [ngModel]="settings().operasyon.orderAutoAssign" (ngModelChange)="updateOperasyon('orderAutoAssign', $event)" />
+          </label>
+        </div>
+      }
+
+      @if (activeModule() === 'gorunum') {
+        <div class="hp-fsettings__rows">
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>Kompakt liste görünümü</strong><small>Tablo ve kartlarda daha yoğun düzen kullanır.</small></span>
+            <input type="checkbox" [ngModel]="settings().gorunum.denseMode" (ngModelChange)="updateGorunum('denseMode', $event)" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Tema</strong><small>Firma panelinin renk modunu belirler.</small></span>
+            <select [ngModel]="settings().gorunum.theme" (ngModelChange)="onThemePick($event)">
+              <option value="light">Açık</option>
+              <option value="dark">Koyu</option>
+              <option value="system">Sistem</option>
+            </select>
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Dil tercihi</strong><small>Panel arayüzünün varsayılan dili.</small></span>
+            <select [ngModel]="settings().gorunum.language" (ngModelChange)="onLanguagePick($event)">
+              <option value="tr">Türkçe</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+        </div>
+      }
+
+      @if (activeModule() === 'guvenlik') {
+        <div class="hp-fsettings__rows">
+          <label class="hp-fsettings__row">
+            <span><strong>Mevcut şifre</strong><small>Yeni şifre tanımlamak için doğrulama alanı.</small></span>
+            <input type="password" [ngModel]="currentPassword()" (ngModelChange)="currentPassword.set($event)" autocomplete="current-password" />
+          </label>
+          <label class="hp-fsettings__row">
+            <span><strong>Yeni şifre</strong><small>En az 6 karakterlik yeni giriş şifresi.</small></span>
+            <input type="password" [ngModel]="newPassword()" (ngModelChange)="newPassword.set($event)" autocomplete="new-password" />
+          </label>
+          <label class="hp-fsettings__row hp-fsettings__row--toggle">
+            <span><strong>İki adımlı doğrulama</strong><small>Ek giriş güvenliği için ikinci doğrulama ister.</small></span>
+            <input
+              type="checkbox"
+              [ngModel]="settings().guvenlik.twoFactorEnabled"
+              (ngModelChange)="updateGuvenlik('twoFactorEnabled', $event)"
+            />
+          </label>
+          <div class="hp-fsettings__row hp-fsettings__row--readonly">
+            <span><strong>Son güncelleme</strong><small>Kaydetme işlemi sonrası otomatik yenilenir.</small></span>
+            <span class="hp-fsettings__value">{{ settings().guvenlik.lastUpdatedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      }
+    </hp-panel-card>
+  </section>
+</div>

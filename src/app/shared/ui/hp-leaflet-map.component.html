@@ -1,0 +1,25 @@
+<div class="hp-leaflet-map">
+  <div
+    #mapEl
+    class="hp-leaflet-map__canvas"
+    role="application"
+    [attr.aria-label]="ariaLabel()"
+  ></div>
+  @if (showLegend()) {
+    <ul class="hp-leaflet-map__legend" aria-label="İşaret açıklaması">
+      <li class="hp-leaflet-map__legend-item">
+        <span class="hp-leaflet-map__dot hp-leaflet-map__dot--courier" aria-hidden="true"></span>
+        Kurye
+      </li>
+      <li class="hp-leaflet-map__legend-item">
+        <span class="hp-leaflet-map__dot hp-leaflet-map__dot--order" aria-hidden="true"></span>
+        Sipariş
+      </li>
+      <li class="hp-leaflet-map__legend-item">
+        <span class="hp-leaflet-map__dot hp-leaflet-map__dot--dropoff" aria-hidden="true"></span>
+        Teslim
+      </li>
+    </ul>
+    <p class="hp-leaflet-map__hint">{{ mapHint() }}</p>
+  }
+</div>

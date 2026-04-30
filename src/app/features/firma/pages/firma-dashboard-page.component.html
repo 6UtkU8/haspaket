@@ -1,0 +1,104 @@
+<div class="hp-fdash hp-shell-page">
+  <section class="hp-fdash__kpis hp-shell-stagger" aria-label="Özet KPI">
+    @for (k of kpis; track k.key) {
+      <hp-kpi-card
+        [label]="k.label"
+        [value]="k.value"
+        [hint]="k.hint"
+        [icon]="k.icon"
+        [isCurrency]="k.isCurrency"
+      />
+    }
+  </section>
+
+  <section
+    class="hp-fdash__map-section hp-fdash__map-enter hp-shell-stagger"
+    aria-label="Canlı teslim takibi"
+  >
+    <hp-panel-card title="Canlı teslim takibi">
+      <span panel-actions class="hp-fdash__map-badge">Yolda · dağıtımda</span>
+      <hp-firma-live-tracking-map />
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-fdash__mid hp-shell-stagger" aria-label="Siparişler ve operasyon durumu">
+    <hp-panel-card title="Son siparişler">
+      <span panel-actions class="hp-fdash__live">Canlı</span>
+      <div class="hp-fdash__table-wrap">
+        <table class="hp-fdash__table">
+          <thead>
+            <tr>
+              <th scope="col">Kod</th>
+              <th scope="col">Müşteri</th>
+              <th scope="col">Durum</th>
+              <th scope="col" class="hp-fdash__th-time">Saat</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of recentOrders; track row.id) {
+              <tr>
+                <td><span class="hp-fdash__code">{{ row.id }}</span></td>
+                <td>{{ row.customer }}</td>
+                <td><span class="hp-fdash__pill">{{ row.status }}</span></td>
+                <td class="hp-fdash__td-time">{{ row.time }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Durum dagilimi">
+      <ul class="hp-fdash__pipe" role="list">
+        @for (p of operationPipeline; track p.label) {
+          <li class="hp-fdash__pipe-row">
+            <div class="hp-fdash__pipe-meta">
+              <span class="hp-fdash__pipe-label">{{ p.label }}</span>
+              <span class="hp-fdash__pipe-count">{{ p.count }}</span>
+            </div>
+            <div class="hp-fdash__pipe-track" aria-hidden="true">
+              <span
+                class="hp-fdash__pipe-fill"
+                [style.width.%]="p.share * 100"
+              ></span>
+            </div>
+          </li>
+        }
+      </ul>
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-fdash__charts hp-shell-stagger" aria-label="Grafikler">
+    <hp-panel-card title="Günlük sipariş hacmi">
+      <div class="hp-fdash__bars" role="img" aria-label="Son yedi gün sipariş sütun grafiği">
+        @for (d of dailyOrders; track d.day) {
+          <div class="hp-fdash__bar-col">
+            <div
+              class="hp-fdash__bar"
+              [style.height.%]="(d.n / maxDaily) * 100"
+              [attr.title]="d.n + ' sipariş'"
+            ></div>
+            <span class="hp-fdash__bar-label">{{ d.day }}</span>
+          </div>
+        }
+      </div>
+    </hp-panel-card>
+
+    <hp-panel-card title="Kurye performansı">
+      <ul class="hp-fdash__perf" role="list">
+        @for (c of courierPerf; track c.name) {
+          <li class="hp-fdash__perf-row">
+            <span class="hp-fdash__perf-name">{{ c.name }}</span>
+            <div class="hp-fdash__perf-track">
+              <span
+                class="hp-fdash__perf-fill"
+                [style.width.%]="(c.score / maxCourierScore) * 100"
+              ></span>
+            </div>
+            <span class="hp-fdash__perf-score">{{ c.score }}</span>
+          </li>
+        }
+      </ul>
+    </hp-panel-card>
+  </section>
+</div>

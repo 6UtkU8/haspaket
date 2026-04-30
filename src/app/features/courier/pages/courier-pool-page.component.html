@@ -1,0 +1,71 @@
+<div class="hp-cpool hp-shell-page">
+  <section class="hp-cpool__page-head" aria-label="Sayfa başlığı">
+    <h1 class="hp-cpool__title">Havuz Paketleri</h1>
+  </section>
+
+  <div class="hp-cpool__panels hp-shell-stagger">
+  <section aria-label="Havuz filtreleri">
+    <hp-panel-card title="Filtreler">
+      <div class="hp-cpool__filters">
+        <button type="button" [class.hp-cpool__filter--active]="filter() === 'all'" (click)="setFilter('all')">Tümü</button>
+        <button type="button" [class.hp-cpool__filter--active]="filter() === 'nearby'" (click)="setFilter('nearby')">Yakındaki</button>
+        <button type="button" [class.hp-cpool__filter--active]="filter() === 'priority'" (click)="setFilter('priority')">Öncelikli</button>
+        <button type="button" [class.hp-cpool__filter--active]="filter() === 'new'" (click)="setFilter('new')">Yeni</button>
+      </div>
+    </hp-panel-card>
+  </section>
+
+  <section aria-label="Havuz paket listesi">
+    <hp-panel-card title="Uygun paketler">
+      @if (poolOrders().length) {
+        <ul class="hp-cpool__list" role="list">
+          @for (order of poolOrders(); track order.id) {
+            <li class="hp-cpool__item">
+              <div class="hp-cpool__top">
+                <div>
+                  <strong>{{ order.id }}</strong>
+                  <p>{{ order.from }} → {{ order.to }}</p>
+                </div>
+                <div class="hp-cpool__badges">
+                  <span class="hp-cpool__badge" [class]="priorityClass(order.id)">{{ getPriority(order.id) }}</span>
+                  <span class="hp-cpool__badge hp-cpool__badge--status">{{ ops.statusLabel(order.status) }}</span>
+                </div>
+              </div>
+
+              <div class="hp-cpool__meta">
+                <div>
+                  <span>Müşteri</span>
+                  <strong>{{ order.customer }}</strong>
+                </div>
+                <div>
+                  <span>Bölge</span>
+                  <strong class="hp-cpool__address-row">
+                    <span>{{ order.from }} → {{ order.to }}</span>
+                    <button type="button" class="hp-cpool__map-btn" (click)="openInMaps(order.to)" aria-label="Adresi haritada aç">
+                      Haritada aç
+                    </button>
+                  </strong>
+                </div>
+                <div>
+                  <span>Süre</span>
+                  <strong>{{ ops.elapsedFor(order) }}</strong>
+                </div>
+              </div>
+
+              <div class="hp-cpool__actions">
+                <button type="button" (click)="claimOrder(order.id)">Paketi Al</button>
+                <a routerLink="/courier/dashboard">Anasayfaya git</a>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="hp-cpool__empty-state">
+          <p class="hp-cpool__empty-title">Havuzda paket yok</p>
+          <p class="hp-cpool__empty">Uygun yeni sipariş geldiginde burada listelenecek.</p>
+        </div>
+      }
+    </hp-panel-card>
+  </section>
+  </div>
+</div>

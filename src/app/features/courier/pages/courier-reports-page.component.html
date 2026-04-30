@@ -1,0 +1,263 @@
+<div class="hp-creports hp-shell-page">
+  <section class="hp-creports__page-head" aria-label="Sayfa başlık">
+    <h1 class="hp-creports__title">Günlük Raporlar</h1>
+  </section>
+
+  <section class="hp-creports__period" aria-label="Dönem seçimi">
+    @for (item of periods; track item.key) {
+      <button
+        type="button"
+        [class.hp-creports__period-btn--active]="period() === item.key"
+        class="hp-creports__period-btn"
+        (click)="setPeriod(item.key)"
+      >
+        {{ item.label }}
+      </button>
+    }
+  </section>
+
+  <section class="hp-creports__kpis hp-shell-stagger" aria-label="Rapor KPI">
+    <hp-kpi-card label="Toplam Teslim Paket" [value]="completedCount()" icon="check" hint="Seçilen döneme göre teslim" />
+    <hp-kpi-card label="Toplam Kazanılan Tutar" [value]="totalEarned()" icon="package" hint="TL · fiş toplamı (seçilen dönem)" />
+    <hp-kpi-card label="Toplam Aktif Süre" [value]="totalActiveMinutes()" icon="users" hint="Dakika · seçilen dönemde teslimler" />
+    <hp-kpi-card label="Ortalama Paket Tutarı" [value]="averagePackageAmount()" icon="user" hint="TL · fiş ortalaması (seçilen dönem)" />
+  </section>
+
+  <section aria-label="Günlere göz at">
+    <hp-panel-card title="Günlere Göz At">
+      <div class="hp-creports__range">
+        <div class="hp-creports__range-row">
+          <label class="hp-creports__range-label">
+            <span>Başlangıç tarihi</span>
+            <input
+              type="date"
+              class="hp-creports__range-input"
+              [ngModel]="rangeDraftStart()"
+              (ngModelChange)="rangeDraftStart.set($event)"
+            />
+          </label>
+          <label class="hp-creports__range-label">
+            <span>Bitiş tarihi</span>
+            <input
+              type="date"
+              class="hp-creports__range-input"
+              [ngModel]="rangeDraftEnd()"
+              (ngModelChange)="rangeDraftEnd.set($event)"
+            />
+          </label>
+          <div class="hp-creports__range-btns">
+            <button type="button" class="hp-creports__range-btn hp-creports__range-btn--primary" (click)="applyRange()">
+              Uygula
+            </button>
+            <button type="button" class="hp-creports__range-btn hp-creports__range-btn--ghost" (click)="clearRange()">
+              Temizle
+            </button>
+          </div>
+        </div>
+        @if (rangeSummary(); as rs) {
+          <p class="hp-creports__range-caption">{{ rs.labelStart }} – {{ rs.labelEnd }}</p>
+          <div class="hp-creports__range-summary" role="region" aria-label="Seçilen aralık özeti">
+            <article class="hp-creports__range-stat">
+              <span class="hp-creports__range-stat-label">Toplam paket</span>
+              <strong class="hp-creports__range-stat-value">{{ rs.totalPackages }}</strong>
+            </article>
+            <article class="hp-creports__range-stat">
+              <span class="hp-creports__range-stat-label">Toplam kazanç</span>
+              <strong class="hp-creports__range-stat-value">{{ rs.totalEarned }} TL</strong>
+            </article>
+            <article class="hp-creports__range-stat">
+              <span class="hp-creports__range-stat-label">Toplam nakit</span>
+              <strong class="hp-creports__range-stat-value">{{ rs.nakit }} TL</strong>
+            </article>
+            <article class="hp-creports__range-stat">
+              <span class="hp-creports__range-stat-label">Toplam kart</span>
+              <strong class="hp-creports__range-stat-value">{{ rs.kart }} TL</strong>
+            </article>
+          </div>
+        }
+      </div>
+      <div class="hp-creports__days">
+        @if (dayRows().length === 0) {
+          <p class="hp-creports__empty hp-creports__days-empty">Henüz teslim günlüğü yok.</p>
+        }
+        @for (item of dayRows(); track item.dayMs) {
+          <article class="hp-creports__day-row">
+            <span>{{ item.date }}</span>
+            <span>{{ item.count }} paket</span>
+            <strong>{{ item.amount }} TL</strong>
+            <button type="button" class="hp-creports__day-detail-btn" (click)="openDayDetail(item)">Detay</button>
+          </article>
+        }
+      </div>
+    </hp-panel-card>
+  </section>
+
+  <section aria-label="Teslim edilen paketler">
+    <hp-panel-card title="Teslim Edilen Paketler">
+      @if (deliveredList().length) {
+        <div class="hp-creports__table-wrap">
+          <table class="hp-creports__table">
+            <thead>
+              <tr>
+                <th>Paket</th>
+                <th>Müşteri</th>
+                <th>Tutar</th>
+                <th>Ödeme</th>
+                <th>Saat</th>
+                <th class="hp-creports__th-actions">İşlem</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of deliveredList(); track item.id) {
+                <tr>
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.customer }}</td>
+                  <td>{{ formatTry(amount(item.id)) }}</td>
+                  <td>{{ paymentLabel(item.id) }}</td>
+                  <td>{{ item.stageStartedAtMs | date: 'HH:mm' }}</td>
+                  <td class="hp-creports__table-actions">
+                    <button type="button" class="hp-creports__edit-btn" (click)="openEditModal(item.id)">Düzenle</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="hp-creports__empty">Henüz teslim edilmiş paket yok.</p>
+      }
+    </hp-panel-card>
+  </section>
+</div>
+
+@if (editModalOrderId(); as orderId) {
+  <div class="hp-creports__modal-layer" (click)="closeEditModal()" role="presentation">
+    <section
+      class="hp-creports__modal hp-creports__modal--fis"
+      (click)="$event.stopPropagation()"
+      aria-labelledby="hp-fis-title"
+      aria-modal="true"
+      role="dialog"
+    >
+      <header class="hp-creports__modal-head hp-creports__modal-head--fis hp-creports__modal-head--day-summary">
+        <div class="hp-creports__modal-head-text">
+          <h3 id="hp-fis-title">Fişi Güncelle</h3>
+          <p class="hp-creports__modal-lede">Fiyat ve ödeme tipini güncelleyebilirsin.</p>
+          <p class="hp-creports__fis-ref">{{ orderId }}</p>
+        </div>
+        <button type="button" class="hp-creports__modal-close" (click)="closeEditModal()" aria-label="Kapat">✕</button>
+      </header>
+      @if (editModalDeliverySummary(); as legs) {
+        @if (hasDeliveryLegs(legs)) {
+          <div class="hp-creports__fis-legs" aria-label="Teslim süre özeti">
+            @if (legs.totalMin != null) {
+              <div class="hp-creports__fis-leg">
+                <span>Toplam süre</span>
+                <strong>{{ legs.totalMin }} dk</strong>
+              </div>
+            }
+            @if (legs.firmToRoadMin != null) {
+              <div class="hp-creports__fis-leg">
+                <span>Firmadayım → Yola</span>
+                <strong>{{ legs.firmToRoadMin }} dk</strong>
+              </div>
+            }
+            @if (legs.roadToDeliverMin != null) {
+              <div class="hp-creports__fis-leg">
+                <span>Yola → Teslim</span>
+                <strong>{{ legs.roadToDeliverMin }} dk</strong>
+              </div>
+            }
+          </div>
+        }
+      }
+      <div class="hp-creports__modal-body hp-creports__modal-body--fis">
+        <label class="hp-creports__field">
+          <span>Fiyat</span>
+          <input
+            type="number"
+            class="hp-creports__field-input"
+            inputmode="decimal"
+            min="0"
+            step="1"
+            [ngModel]="editPrice()"
+            (ngModelChange)="onEditPriceInput($event)"
+          />
+        </label>
+        <label class="hp-creports__field">
+          <span>Ödeme tipi</span>
+          <div class="hp-select-field-wrap">
+            <select class="hp-select-field" [ngModel]="editPaymentType()" (ngModelChange)="editPaymentType.set($event)">
+              @for (opt of paymentOptions; track opt) {
+                <option [ngValue]="opt">{{ opt }}</option>
+              }
+            </select>
+          </div>
+        </label>
+      </div>
+      <footer class="hp-creports__modal-actions hp-creports__modal-actions--fis">
+        <button type="button" class="hp-creports__btn-dismiss" (click)="closeEditModal()">Vazgeç</button>
+        <button type="button" class="hp-creports__btn-save" (click)="saveEditModal()">Kaydet</button>
+      </footer>
+    </section>
+  </div>
+}
+
+@if (selectedDayDetail()) {
+  <div class="hp-creports__modal-layer" (click)="closeDayDetail()">
+    <section class="hp-creports__modal hp-creports__modal--wide" (click)="$event.stopPropagation()" aria-label="Gün detayı">
+      <header class="hp-creports__modal-head hp-creports__modal-head--day-summary">
+        <div class="hp-creports__modal-head-text">
+          <h3>Gün özeti</h3>
+          @if (selectedDayPaymentSummary(); as sum) {
+            <p class="hp-creports__modal-subtitle">{{ sum.dateTitle }}</p>
+          }
+        </div>
+        <button type="button" class="hp-creports__modal-close" (click)="closeDayDetail()" aria-label="Kapat">✕</button>
+      </header>
+      <div class="hp-creports__modal-body hp-creports__modal-body--day">
+        @if (selectedDayPaymentSummary(); as sum) {
+          <div class="hp-creports__range-summary hp-creports__day-modal-summary" role="region" aria-label="Gün sonu ödeme özeti">
+            <article class="hp-creports__range-stat">
+              <span class="hp-creports__range-stat-label">Toplam paket</span>
+              <strong class="hp-creports__range-stat-value">{{ sum.packageCount }}</strong>
+            </article>
+            <article class="hp-creports__range-stat">
+              <span class="hp-creports__range-stat-label">Nakit</span>
+              <strong class="hp-creports__range-stat-value">{{ formatTry(sum.nakit) }}</strong>
+            </article>
+            <article class="hp-creports__range-stat">
+              <span class="hp-creports__range-stat-label">Kart</span>
+              <strong class="hp-creports__range-stat-value">{{ formatTry(sum.kart) }}</strong>
+            </article>
+            @if (sum.diger > 0) {
+              <article class="hp-creports__range-stat">
+                <span class="hp-creports__range-stat-label">Diğer</span>
+                <strong class="hp-creports__range-stat-value">{{ formatTry(sum.diger) }}</strong>
+              </article>
+            }
+            <article class="hp-creports__range-stat hp-creports__range-stat--total">
+              <span class="hp-creports__range-stat-label">Toplam tutar</span>
+              <strong class="hp-creports__range-stat-value">{{ formatTry(sum.total) }}</strong>
+            </article>
+          </div>
+        }
+        <div class="hp-creports__detail-packages">
+          <strong>Teslim edilen paketler</strong>
+          @if (dayDetailDeliveredList().length) {
+            <ul class="hp-creports__detail-list hp-creports__detail-list--day-packages">
+              @for (item of dayDetailDeliveredList(); track item.id) {
+                <li>
+                  <span class="hp-creports__detail-line-main">{{ item.id }} · {{ item.customer }}</span>
+                  <strong class="hp-creports__detail-line-pay">{{ paymentCategoryLabel(item) }} · {{ formatTry(amount(item.id)) }}</strong>
+                </li>
+              }
+            </ul>
+          } @else {
+            <p class="hp-creports__empty hp-creports__empty--inline">Bu gün için teslim paketi kaydı yok.</p>
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+}

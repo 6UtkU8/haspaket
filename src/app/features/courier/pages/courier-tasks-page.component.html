@@ -1,0 +1,83 @@
+<div class="hp-ctasks hp-shell-page">
+  <section class="hp-ctasks__page-head" aria-label="Sayfa başlık alanı">
+    <h1 class="hp-ctasks__title">Görevler</h1>
+  </section>
+  <section class="hp-ctasks__kpis" aria-label="Görev özeti">
+    <hp-panel-card>
+      <p class="hp-ctasks__kpi-label">Aktif görev</p>
+      <p class="hp-ctasks__kpi-value">{{ tasks().length }}</p>
+    </hp-panel-card>
+    <hp-panel-card>
+      <p class="hp-ctasks__kpi-label">Tamamlanan</p>
+      <p class="hp-ctasks__kpi-value">{{ doneTasks() }}</p>
+    </hp-panel-card>
+  </section>
+
+  <section class="hp-ctasks__grid hp-shell-stagger" aria-label="Görev listesi">
+    <hp-panel-card title="Atanan görevler">
+      @if (tasks().length) {
+        <ul class="hp-ctasks__list" role="list">
+          @for (t of tasks(); track t.id) {
+            <li [class.hp-ctasks__item--active]="selected().id === t.id" (click)="selectTask(t.id)">
+              <div>
+                <strong>{{ t.id }}</strong>
+                <p>{{ t.from }} → {{ t.to }}</p>
+              </div>
+              <div class="hp-ctasks__item-actions">
+                <span class="hp-ctasks__status-badge">{{ ops.statusLabel(t.status) }}</span>
+                <a [routerLink]="['/courier/gorevler', t.id]" (click)="$event.stopPropagation()">Detay</a>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="hp-ctasks__empty-state">
+          <p class="hp-ctasks__empty-title">Şu an aktif görev yok</p>
+          <p class="hp-ctasks__empty">Yeni atama geldiğinde burada görünecek.</p>
+        </div>
+      }
+    </hp-panel-card>
+
+    <hp-panel-card title="Görev detayı">
+      @if (selected(); as t) {
+        <div class="hp-ctasks__detail hp-ctasks__detail--highlight">
+          <div class="hp-ctasks__detail-head">
+            <p><strong>{{ t.id }}</strong> · {{ t.customer }}</p>
+            <span class="hp-ctasks__status-badge">{{ ops.statusLabel(t.status) }}</span>
+          </div>
+          <div class="hp-ctasks__detail-grid">
+            <div class="hp-ctasks__detail-row">
+              <span>Rota</span>
+              <strong>{{ t.from }} → {{ t.to }}</strong>
+            </div>
+            <div class="hp-ctasks__detail-row">
+              <span>Geçen süre</span>
+              <strong class="hp-ctasks__time">{{ ops.elapsedFor(t) }}</strong>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="hp-ctasks__btn"
+            [disabled]="!(t.status === 'alinacak' || t.status === 'dagitimda')"
+            (click)="progressSelected()"
+          >
+            {{ t.status === 'alinacak' ? 'Yola Çık (Yolda)' : 'Teslim Edildi Olarak İşaretle' }}
+          </button>
+          <ul class="hp-ctasks__timeline" role="list">
+            @for (ev of t.timeline; track ev.id) {
+              <li>
+                <strong>{{ ev.label }}</strong>
+                <span>{{ ev.actor }} · {{ ev.atMs | date: 'HH:mm' }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      } @else {
+        <div class="hp-ctasks__empty-state">
+          <p class="hp-ctasks__empty-title">Detay için görev seçin</p>
+          <p class="hp-ctasks__empty">Soldan bir görev seçerek ilerlemeyi yönetin.</p>
+        </div>
+      }
+    </hp-panel-card>
+  </section>
+</div>

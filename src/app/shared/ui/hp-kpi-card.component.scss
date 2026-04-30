@@ -1,0 +1,95 @@
+.hp-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hp-panel-kpi-gap);
+  padding: var(--hp-panel-kpi-pad);
+  border-radius: clamp(12px, 2vw, 16px);
+  border: 1px solid var(--hp-color-border);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--hp-color-surface) 94%, transparent) 0%,
+    color-mix(in srgb, var(--hp-color-surface-soft) 88%, transparent) 100%
+  );
+  box-shadow: var(--hp-shadow-card);
+  transition:
+    border-color var(--hp-transition-fast),
+    box-shadow var(--hp-transition-fast),
+    transform var(--hp-transition-fast);
+}
+
+.hp-kpi:hover {
+  border-color: color-mix(in srgb, var(--hp-color-primary) 22%, transparent);
+  box-shadow:
+    var(--hp-shadow-card-hover),
+    0 0 0 1px color-mix(in srgb, var(--hp-color-primary) 12%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hp-kpi:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-kpi:hover {
+    transform: none;
+  }
+}
+
+.hp-kpi__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.hp-kpi__label {
+  font-size: var(--hp-panel-kpi-label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hp-color-text-muted);
+  line-height: 1.3;
+}
+
+.hp-kpi__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hp-panel-kpi-icon-box);
+  height: var(--hp-panel-kpi-icon-box);
+  flex-shrink: 0;
+  border-radius: 10px;
+  color: var(--hp-color-primary);
+  background: var(--hp-color-primary-soft);
+  border: 1px solid color-mix(in srgb, var(--hp-color-primary) 22%, transparent);
+  box-shadow: var(--hp-glow-kpi-icon);
+}
+
+.hp-kpi__icon svg {
+  width: var(--hp-panel-kpi-icon-svg);
+  height: var(--hp-panel-kpi-icon-svg);
+}
+
+.hp-kpi__value {
+  margin: 0.15rem 0 0;
+  font-size: var(--hp-panel-kpi-value);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--hp-color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.hp-kpi__currency {
+  margin-left: 0.2rem;
+  font-size: 0.55em;
+  font-weight: 600;
+  color: var(--hp-color-text-muted);
+}
+
+.hp-kpi__hint {
+  margin: 0.15rem 0 0;
+  font-size: var(--hp-panel-kpi-hint);
+  color: var(--hp-color-text-muted);
+}

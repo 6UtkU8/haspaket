@@ -1,0 +1,69 @@
+.hp-toast-stack {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10060;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  pointer-events: none;
+
+  @media (max-width: 520px) {
+    left: 1rem;
+    right: 1rem;
+    align-items: stretch;
+    max-width: none;
+  }
+}
+
+.hp-toast {
+  pointer-events: auto;
+  padding: 0.72rem 0.88rem;
+  border-radius: var(--hp-radius-md);
+  border: 1px solid color-mix(in srgb, var(--hp-color-border) 82%, transparent);
+  background:
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--hp-color-surface-elevated) 78%, #070b12 22%),
+      color-mix(in srgb, var(--hp-color-surface) 88%, transparent)
+    );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 9%, transparent),
+    0 8px 28px color-mix(in srgb, #000 45%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--hp-color-primary) 22%, transparent),
+    0 0 28px color-mix(in srgb, var(--hp-color-primary) 14%, transparent),
+    0 0 42px color-mix(in srgb, #38bdf8 12%, transparent);
+  display: grid;
+  gap: 0.22rem;
+  min-width: 0;
+  animation: hp-toast-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hp-toast__title {
+  margin: 0;
+  font-size: var(--hp-panel-body-sm);
+  font-weight: 700;
+  color: var(--hp-color-text);
+  letter-spacing: 0.01em;
+}
+
+.hp-toast__sub {
+  margin: 0;
+  font-size: var(--hp-panel-caption);
+  color: var(--hp-color-text-muted);
+  line-height: 1.35;
+}
+
+@keyframes hp-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

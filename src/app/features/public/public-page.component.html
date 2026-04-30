@@ -1,0 +1,454 @@
+<div
+  class="hp-landing"
+  [class.hp-landing--intro-skip]="introSkip()"
+  [class.hp-landing--reduce-motion]="reduceMotion()"
+>
+  <header
+    class="hp-navbar"
+    [class.hp-navbar--scrolled]="scrolled()"
+  >
+    <div class="hp-navbar__inner">
+      <a routerLink="/" class="hp-navbar__brand" (click)="closeMenu()">
+        <hp-brand-logo
+          imgClass="hp-navbar__logo"
+          [width]="132"
+          [height]="40"
+          loading="eager"
+          decoding="async"
+          (animationEnd)="onLogoIntroEnd($event)"
+        />
+      </a>
+
+      <nav class="hp-navbar__nav" aria-label="Ana menü">
+        <a
+          routerLink="/"
+          fragment="ust"
+          class="hp-nav__link"
+          (click)="onAnasayfaClick($event)"
+          >Anasayfa</a
+        >
+        <a href="#ozellikler" class="hp-nav__link">Özellikler</a>
+        <a href="#nasil-calisir" class="hp-nav__link">Nasıl Çalışır</a>
+        <a href="#iletisim" class="hp-nav__link">İletişim</a>
+      </nav>
+
+      <div class="hp-navbar__actions">
+        <a
+          routerLink="/auth/login"
+          class="hp-btn hp-btn--primary"
+        >
+          Giriş Yap
+        </a>
+      </div>
+
+      <button
+        type="button"
+        class="hp-navbar__toggle"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="hp-mobile-menu"
+        aria-label="Menüyü aç"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"
+          />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  @if (menuOpen()) {
+    <div
+      class="hp-navbar__drawer"
+      id="hp-mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      (click)="onDrawerBackdrop()"
+    >
+      <div class="hp-navbar__drawer-panel" (click)="$event.stopPropagation()">
+        <button
+          type="button"
+          class="hp-navbar__drawer-close"
+          (click)="closeMenu()"
+          aria-label="Menüyü kapat"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 1 0 5.7 7.11L10.59 12l-4.9 4.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.9a1 1 0 0 0 1.41-1.41L13.41 12l4.9-4.89a1 1 0 0 0-.01-1.4z"
+            />
+          </svg>
+        </button>
+        <nav class="hp-navbar__drawer-nav" aria-label="Mobil menü">
+          <a
+            routerLink="/"
+            fragment="ust"
+            class="hp-nav__link"
+            (click)="closeMenu(); onAnasayfaClick($event)"
+            >Anasayfa</a
+          >
+          <a href="#ozellikler" class="hp-nav__link" (click)="closeMenu()"
+            >Özellikler</a
+          >
+          <a href="#nasil-calisir" class="hp-nav__link" (click)="closeMenu()"
+            >Nasıl Çalışır</a
+          >
+          <a href="#iletisim" class="hp-nav__link" (click)="closeMenu()"
+            >İletişim</a
+          >
+        </nav>
+        <div class="hp-navbar__drawer-actions">
+          <a
+            routerLink="/auth/login"
+            class="hp-btn hp-btn--primary"
+            (click)="closeMenu()"
+          >
+            Giriş Yap
+          </a>
+        </div>
+      </div>
+    </div>
+  }
+
+  <main>
+    <section id="ust" class="hp-hero" tabindex="-1">
+      <div class="hp-hero__glow" aria-hidden="true"></div>
+
+      <div class="hp-hero__inner">
+      <div class="hp-hero__grid">
+        <div class="hp-hero__copy">
+          <div class="hp-hero__eyebrow">
+            <span class="hp-hero__eyebrow-dot" aria-hidden="true"></span>
+            Kurye ve teslimat için operasyon platformu
+          </div>
+
+          <h1 class="hp-hero__title">
+            Teslimatınızı
+            <span class="hp-hero__title-accent">tek ekrandan</span>
+            yönetin
+          </h1>
+
+          <p class="hp-hero__lead">
+            HasPaket ile gönderilerinizi planlayın, kuryelerinizi yönlendirin ve
+            süreci uçtan uca izleyin. Daha hızlı operasyon, daha şeffaf iletişim,
+            daha güvenilir teslimat deneyimi.
+          </p>
+
+          <div class="hp-hero__cta">
+            <a routerLink="/auth/login" class="hp-btn hp-btn--primary"
+              >Hemen Başla</a
+            >
+            <a href="#ozellikler" class="hp-btn hp-btn--ghost">Özellikleri Gör</a>
+          </div>
+
+          <div class="hp-hero__trust" aria-label="Öne çıkan vaatler">
+            <span class="hp-hero__trust-item">
+              <span class="hp-hero__trust-icon" aria-hidden="true"></span>
+              Canlı durum ve rota görünürlüğü
+            </span>
+            <span class="hp-hero__trust-item">
+              <span class="hp-hero__trust-icon" aria-hidden="true"></span>
+              Operasyon için güvenli erişim
+            </span>
+          </div>
+        </div>
+
+        <div class="hp-hero__mock-wrap">
+          <div class="hp-hero__mock" aria-label="Örnek kontrol paneli görünümü">
+            <span class="hp-hero__mock-badge hp-hero__mock-badge--float">Canlı</span>
+            <div class="hp-hero__mock-body">
+              <div class="hp-hero__mock-stats">
+                <div class="hp-hero__mock-stat">
+                  <div class="hp-hero__mock-stat-label">Aktif gönderi</div>
+                  <div
+                    class="hp-hero__mock-stat-value hp-hero__mock-stat-value--accent"
+                  >
+                    12
+                  </div>
+                </div>
+                <div class="hp-hero__mock-stat">
+                  <div class="hp-hero__mock-stat-label">Bugün teslim</div>
+                  <div class="hp-hero__mock-stat-value">28</div>
+                </div>
+                <div class="hp-hero__mock-stat">
+                  <div class="hp-hero__mock-stat-label">Ort. süre</div>
+                  <div class="hp-hero__mock-stat-value">24 dk</div>
+                </div>
+              </div>
+
+              <div class="hp-hero__mock-rows">
+                <div class="hp-hero__mock-row">
+                  <div>
+                    <div class="hp-hero__mock-row-main">Kadıköy → Beşiktaş</div>
+                    <div class="hp-hero__mock-row-meta">Gönderi #1042</div>
+                  </div>
+                  <div class="hp-hero__mock-row-meta">Yolda</div>
+                  <span class="hp-hero__mock-pill hp-hero__mock-pill--live"
+                    >Canlı</span
+                  >
+                </div>
+                <div class="hp-hero__mock-row">
+                  <div>
+                    <div class="hp-hero__mock-row-main">Üsküdar → Ataşehir</div>
+                    <div class="hp-hero__mock-row-meta">Gönderi #1038</div>
+                  </div>
+                  <div class="hp-hero__mock-row-meta">Dağıtımda</div>
+                  <span class="hp-hero__mock-pill">Planlı</span>
+                </div>
+                <div class="hp-hero__mock-row">
+                  <div>
+                    <div class="hp-hero__mock-row-main">Bakırköy → Şişli</div>
+                    <div class="hp-hero__mock-row-meta">Gönderi #1031</div>
+                  </div>
+                  <div class="hp-hero__mock-row-meta">Teslim edildi</div>
+                  <span class="hp-hero__mock-pill">Tamam</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section
+      id="ozellikler"
+      class="hp-section hp-section--features hp-reveal"
+      aria-labelledby="hp-features-title"
+      tabindex="-1"
+    >
+      <div class="hp-section__inner">
+        <header class="hp-section__head">
+          <p class="hp-section__eyebrow">Özellikler</p>
+          <h2 id="hp-features-title" class="hp-section__title">
+            Operasyonunuzu güçlendiren başlıca yetenekler
+          </h2>
+          <p class="hp-section__lead">
+            HasPaket; planlama, izleme ve iletişimi aynı çatı altında toplar.
+            Ekip alışkanlıklarınıza uyum sağlayan sade bir arayüz sunar.
+          </p>
+        </header>
+
+        <div class="hp-features__grid">
+          <article class="hp-feature-card">
+            <div class="hp-feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z" />
+                <circle cx="12" cy="10" r="2.25" fill="currentColor" stroke="none" />
+              </svg>
+            </div>
+            <h3 class="hp-feature-card__title">Canlı operasyon panosu</h3>
+            <p class="hp-feature-card__text">
+              Gönderi ve kurye durumunu anlık görün; gecikmeleri erken fark edin,
+              müşteri tarafında güveni artırın.
+            </p>
+          </article>
+
+          <article class="hp-feature-card">
+            <div class="hp-feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M4 7h16M4 12h10M4 17h6" />
+                <path d="M18 15l2 2 3-3" />
+              </svg>
+            </div>
+            <h3 class="hp-feature-card__title">Rota ve süre görünürlüğü</h3>
+            <p class="hp-feature-card__text">
+              Dağıtım akışını netleştirin; önceliklendirme ve saha koordinasyonu
+              için tek kaynak kullanın.
+            </p>
+          </article>
+
+          <article class="hp-feature-card">
+            <div class="hp-feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+            </div>
+            <h3 class="hp-feature-card__title">Rol bazlı güvenli erişim</h3>
+            <p class="hp-feature-card__text">
+              Yönetici ve kurye deneyimlerini ayırın; yetkisiz erişimi azaltın,
+              operasyonel kontrolü merkezde tutun.
+            </p>
+          </article>
+
+          <article class="hp-feature-card">
+            <div class="hp-feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path d="M18 8a3 3 0 1 0-6 0c0 2 3 4 3 4s3-2 3-4Z" />
+                <path d="M6 15h.01M6 9h12v12H6z" />
+              </svg>
+            </div>
+            <h3 class="hp-feature-card__title">Anlık bildirim akışı</h3>
+            <p class="hp-feature-card__text">
+              Kritik durumları kaçırmayın; ekip ve operasyon ritmini koruyan
+              düzenli bilgilendirme alın.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="nasil-calisir"
+      class="hp-section hp-section--how hp-reveal"
+      aria-labelledby="hp-how-title"
+      tabindex="-1"
+    >
+      <div class="hp-section__inner">
+        <header class="hp-section__head">
+          <p class="hp-section__eyebrow">Nasıl çalışır</p>
+          <h2 id="hp-how-title" class="hp-section__title">
+            Üç adımda operasyona başlayın
+          </h2>
+          <p class="hp-section__lead">
+            Karmaşık kurulumlar yerine net bir akış: tanımla, yönlendir, izle.
+          </p>
+        </header>
+
+        <ol class="hp-how__steps">
+          <li class="hp-how__step">
+            <span class="hp-how__num">1</span>
+            <div class="hp-how__body">
+              <h3 class="hp-how__title">Ekibinizi ve rolleri tanımlayın</h3>
+              <p class="hp-how__text">
+                Operasyon yapınıza uygun şekilde kullanıcıları oluşturun; yönetim
+                ve saha erişimini net sınırlarla ayırın.
+              </p>
+            </div>
+          </li>
+          <li class="hp-how__step">
+            <span class="hp-how__num">2</span>
+            <div class="hp-how__body">
+              <h3 class="hp-how__title">Gönderileri planlayın ve atayın</h3>
+              <p class="hp-how__text">
+                Günlük dağıtımınızı düzenleyin; kurye yükünü dengeli dağıtarak
+                teslim performansını yükseltin.
+              </p>
+            </div>
+          </li>
+          <li class="hp-how__step">
+            <span class="hp-how__num">3</span>
+            <div class="hp-how__body">
+              <h3 class="hp-how__title">Canlı izleyin ve iyileştirin</h3>
+              <p class="hp-how__text">
+                Durumları takip edin; darboğazları görün ve operasyonu sürekli
+                daha verimli hale getirin.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section
+      id="iletisim"
+      class="hp-section hp-section--cta hp-reveal"
+      aria-labelledby="hp-cta-eyebrow hp-cta-title"
+      tabindex="-1"
+    >
+      <div class="hp-section__inner">
+        <div class="hp-cta">
+          <div class="hp-cta__glow" aria-hidden="true"></div>
+          <div class="hp-cta__content">
+            <p id="hp-cta-eyebrow" class="hp-section__eyebrow">İletişim</p>
+            <h2 id="hp-cta-title" class="hp-cta__title">
+              HasPaket ile teslimat operasyonunuzu bir üst seviyeye taşıyın
+            </h2>
+            <p class="hp-cta__lead">
+              Ekibinizi hızlandırın, müşteri güvenini artırın ve operasyonu tek
+              merkezden yönetin. Bir sonraki adım için hazırsanız başlayalım.
+            </p>
+            <div class="hp-cta__actions">
+              <a routerLink="/auth/login" class="hp-btn hp-btn--primary hp-btn--lg"
+                >Hemen Başla</a
+              >
+              <a
+                href="mailto:destek@haspaket.com?subject=HasPaket%20hakkında%20bilgi"
+                class="hp-btn hp-btn--ghost hp-btn--lg"
+                >Bize yazın</a
+              >
+            </div>
+            <p class="hp-cta__note">
+              Kurumsal talepler için
+              <a class="hp-cta__link" href="mailto:destek@haspaket.com"
+                >destek&#64;haspaket.com</a
+              >
+              adresinden bize ulaşabilirsiniz.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="hp-footer hp-reveal">
+      <div class="hp-footer__inner">
+        <div class="hp-footer__brand">
+          <hp-brand-logo
+            imgClass="hp-footer__logo"
+            [width]="92"
+            [height]="28"
+            loading="lazy"
+            decoding="async"
+          />
+          <p class="hp-footer__desc">
+            Kurye ve teslimat operasyonları için modern, güvenilir ve ölçeklenebilir
+            yönetim deneyimi.
+          </p>
+        </div>
+
+        <nav class="hp-footer__nav" aria-label="Alt menü">
+          <p class="hp-footer__label">Hızlı bağlantılar</p>
+          <ul class="hp-footer__links">
+            <li>
+              <a
+                routerLink="/"
+                fragment="ust"
+                (click)="onAnasayfaClick($event)"
+                >Anasayfa</a
+              >
+            </li>
+            <li><a href="#ozellikler">Özellikler</a></li>
+            <li><a href="#nasil-calisir">Nasıl Çalışır</a></li>
+            <li><a href="#iletisim">İletişim</a></li>
+            <li><a routerLink="/auth/login">Giriş Yap</a></li>
+          </ul>
+        </nav>
+
+        <div class="hp-footer__contact">
+          <p class="hp-footer__label">İletişim</p>
+          <p class="hp-footer__contact-line">
+            <a href="mailto:destek@haspaket.com">destek&#64;haspaket.com</a>
+          </p>
+          <p class="hp-footer__contact-line hp-footer__contact-line--muted">
+            Hafta içi 09:00–18:00
+          </p>
+        </div>
+      </div>
+
+      <div class="hp-footer__bar">
+        <p class="hp-footer__copy">
+          © {{ currentYear }} HasPaket. Tüm hakları saklıdır.
+        </p>
+      </div>
+    </footer>
+  </main>
+
+  @if (showScrollTop()) {
+    <button
+      type="button"
+      class="hp-scroll-top"
+      aria-label="Sayfanın başına dön"
+      (click)="scrollToTop()"
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"
+        />
+      </svg>
+    </button>
+  }
+</div>

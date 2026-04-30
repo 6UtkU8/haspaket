@@ -1,0 +1,112 @@
+:root {
+  --hp-color-primary: #ff6b00;
+  --hp-color-primary-soft: rgba(255, 107, 0, 0.14);
+  --hp-body-gradient: radial-gradient(circle at top right, #1d2538 0%, #0f1117 45%);
+  --hp-color-bg: #0f1117;
+  --hp-color-surface: #161a24;
+  --hp-color-surface-soft: #1c2130;
+  --hp-color-surface-elevated: #1f2433;
+  --hp-color-text: #f5f7ff;
+  --hp-color-text-muted: #b5bdd4;
+  --hp-color-border: rgba(255, 255, 255, 0.08);
+  --hp-color-border-strong: rgba(255, 255, 255, 0.12);
+  --hp-color-divider: rgba(255, 255, 255, 0.06);
+  --hp-color-primary-muted: rgba(255, 107, 0, 0.08);
+
+  --hp-radius-sm: 8px;
+  --hp-radius-md: 14px;
+  --hp-radius-lg: 20px;
+
+  /* Glow / gölge — yumuşak, göz yormayan derinlik (landing polish) */
+  --hp-glow-primary: 0 0 22px rgba(255, 107, 0, 0.18);
+  --hp-glow-ambient: 0 0 96px rgba(255, 107, 0, 0.07);
+  --hp-shadow-card: 0 8px 26px rgba(0, 0, 0, 0.3);
+  --hp-shadow-float: 0 20px 46px rgba(0, 0, 0, 0.38);
+  --hp-shadow-card-hover: 0 14px 36px rgba(0, 0, 0, 0.34);
+  --hp-shadow-dropdown: 0 12px 40px rgba(0, 0, 0, 0.42);
+  --hp-radius-dropdown: 11px;
+
+  /* Logo PNG — yükseklik breakpoint’lerde component’te; max genişlik referansı */
+  --hp-logo-nav-max-width: min(13rem, 58vw);
+  --hp-logo-footer-height: clamp(1.5rem, 2.6vw, 1.75rem);
+  --hp-logo-footer-max-width: min(11rem, 72vw);
+  /* Yatay padding, içerik max, navbar, auth kabuğu: `panel-scale.scss` */
+
+  --hp-space-section: clamp(3.35rem, 8.5vw, 5.5rem);
+  --hp-space-section-tight: clamp(2.75rem, 6.5vw, 4.25rem);
+  /* Butonlar — biraz daha yumuşak köşe, primary ile hizalı */
+  --hp-btn-radius: 10px;
+
+  --hp-font-heading: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --hp-font-body: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Courier panel — sabit tipografi ölçeği */
+  --fs-xs: var(--hp-panel-caption);
+  --fs-sm: var(--hp-panel-body-sm);
+  --fs-md: var(--hp-panel-body-md);
+  --fs-lg: var(--hp-panel-section-title);
+  --fs-xl: var(--hp-panel-page-title);
+  --fs-title: var(--hp-panel-page-title);
+  --lh-body: 1.4;
+  --lh-title: 1.2;
+
+  /* Courier / panel — sabit aralık ölçeği (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --hp-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --hp-transition-fast: 180ms var(--hp-ease-out);
+  --hp-transition-med: 260ms var(--hp-ease-out);
+
+  /* Giriş / reveal — abartısız, premium hissi */
+  --hp-motion-logo-enter: 0.78s; /* 600–900ms aralığında logo girişi */
+  --hp-motion-enter: 0.72s;
+  --hp-motion-enter-short: 0.52s;
+  --hp-motion-stagger: 55ms;
+  --hp-motion-reveal: 0.58s;
+
+  /* İkincil metin (dark) */
+  --hp-color-text-secondary: #c8cedd;
+
+  /* Panel kabuk — sidebar / üst çubuk (dark: mevcut color-mix ile aynı his) */
+  --hp-shell-sidebar-bg: color-mix(in srgb, var(--hp-color-surface) 92%, transparent);
+  --hp-shell-header-bg: color-mix(in srgb, var(--hp-color-bg) 88%, transparent);
+
+  /* Form, select, iskelet, rozet (dark) */
+  --hp-color-input-bg: rgba(0, 0, 0, 0.22);
+  --hp-color-select-trigger-bg: rgba(0, 0, 0, 0.22);
+  --hp-color-option-hover-bg: rgba(255, 255, 255, 0.06);
+  --hp-color-scrollbar-track: rgba(0, 0, 0, 0.2);
+  --hp-color-skeleton-shade: rgba(0, 0, 0, 0.15);
+  --hp-badge-muted-bg: rgba(255, 255, 255, 0.06);
+  --hp-badge-success-fg: #86efac;
+  --hp-badge-success-bg: rgba(34, 197, 94, 0.12);
+  --hp-badge-success-border: rgba(34, 197, 94, 0.28);
+
+  /* Overlay, gölgeler (sidebar / drawer / mobil sheet) */
+  --hp-backdrop: rgba(0, 0, 0, 0.52);
+  --hp-shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.2);
+  --hp-shadow-sidebar-float: 8px 0 32px rgba(0, 0, 0, 0.45);
+  --hp-shadow-drawer: -8px 0 28px rgba(0, 0, 0, 0.28);
+  --hp-shadow-sheet: 0 -12px 40px rgba(0, 0, 0, 0.4);
+
+  /* Durum renkleri (dark UI ipuçları) */
+  --hp-color-success: #4ade80;
+  --hp-color-warning: #fbbf24;
+  --hp-color-danger: #f87171;
+
+  /* KPI ikon halkası */
+  --hp-glow-kpi-icon: 0 0 18px rgba(255, 107, 0, 0.12);
+
+  /* Yan menü link hover (dark) */
+  --hp-color-nav-hover-bg: rgba(255, 255, 255, 0.04);
+
+  /* Dashboard — boru track, istatistik satırı, rozet zeminleri */
+  --hp-color-muted-track: rgba(0, 0, 0, 0.35);
+  --hp-color-subtle-row: rgba(0, 0, 0, 0.2);
+}

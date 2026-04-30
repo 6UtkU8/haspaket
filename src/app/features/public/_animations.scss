@@ -1,0 +1,145 @@
+@keyframes hp-logo-enter {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+@keyframes hp-enter-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hp-enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion)
+  .hp-navbar__logo {
+  animation: hp-logo-enter var(--hp-motion-logo-enter) var(--hp-ease-out) both;
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion) .hp-navbar {
+  animation: hp-enter-fade 0.55s var(--hp-ease-out) both;
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion) .hp-navbar__nav {
+  opacity: 0;
+  animation: hp-enter-fade var(--hp-motion-enter-short) var(--hp-ease-out) 0.16s forwards;
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion) .hp-navbar__actions {
+  opacity: 0;
+  animation: hp-enter-fade var(--hp-motion-enter-short) var(--hp-ease-out) 0.22s forwards;
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion) .hp-navbar__toggle {
+  opacity: 0;
+  animation: hp-enter-fade var(--hp-motion-enter-short) var(--hp-ease-out) 0.2s forwards;
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion) .hp-hero__glow {
+  opacity: 0;
+  animation: hp-enter-fade var(--hp-motion-enter) ease-out 0.06s forwards;
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion) .hp-hero__copy > * {
+  opacity: 0;
+  animation: hp-enter-fade-up var(--hp-motion-enter-short) var(--hp-ease-out) forwards;
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion)
+  .hp-hero__copy
+  > *:nth-child(1) {
+  animation-delay: 0.14s;
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion)
+  .hp-hero__copy
+  > *:nth-child(2) {
+  animation-delay: calc(0.14s + var(--hp-motion-stagger));
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion)
+  .hp-hero__copy
+  > *:nth-child(3) {
+  animation-delay: calc(0.14s + var(--hp-motion-stagger) * 2);
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion)
+  .hp-hero__copy
+  > *:nth-child(4) {
+  animation-delay: calc(0.14s + var(--hp-motion-stagger) * 3);
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion)
+  .hp-hero__copy
+  > *:nth-child(5) {
+  animation-delay: calc(0.14s + var(--hp-motion-stagger) * 4);
+}
+
+.hp-landing:not(.hp-landing--intro-skip):not(.hp-landing--reduce-motion) .hp-hero__mock-wrap {
+  opacity: 0;
+  animation: hp-enter-fade-up 0.68s var(--hp-ease-out) 0.26s forwards;
+}
+
+.hp-reveal {
+  opacity: 0;
+  transition: opacity var(--hp-motion-reveal) var(--hp-ease-out);
+}
+
+.hp-reveal--visible {
+  opacity: 1;
+}
+
+.hp-landing--reduce-motion .hp-reveal {
+  opacity: 1;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-landing .hp-navbar__logo,
+  .hp-landing .hp-navbar,
+  .hp-landing .hp-navbar__nav,
+  .hp-landing .hp-navbar__actions,
+  .hp-landing .hp-navbar__toggle,
+  .hp-landing .hp-hero__glow,
+  .hp-landing .hp-hero__copy > *,
+  .hp-landing .hp-hero__mock-wrap {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .hp-reveal {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  .hp-navbar__brand:hover .hp-navbar__logo {
+    opacity: 1 !important;
+  }
+
+  .hp-btn--primary:active,
+  .hp-btn--ghost:active {
+    transform: none !important;
+  }
+}

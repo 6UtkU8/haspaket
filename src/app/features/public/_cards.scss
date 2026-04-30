@@ -1,0 +1,177 @@
+.hp-hero__mock-wrap {
+  position: relative;
+}
+
+.hp-hero__mock {
+  position: relative;
+  border-radius: var(--hp-radius-lg);
+  border: 1px solid color-mix(in srgb, var(--hp-color-border) 90%, transparent);
+  background: linear-gradient(
+    148deg,
+    color-mix(in srgb, var(--hp-color-surface) 93%, #000),
+    color-mix(in srgb, var(--hp-color-surface-soft) 89%, #000)
+  );
+  box-shadow: var(--hp-shadow-float);
+  overflow: hidden;
+}
+
+.hp-hero__mock::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 82% 0%, rgba(255, 107, 0, 0.075), transparent 58%);
+  pointer-events: none;
+}
+
+.hp-hero__mock-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--hp-color-border);
+  color: var(--hp-color-text-muted);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.hp-hero__mock-badge--float {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.85rem;
+  z-index: 1;
+}
+
+.hp-hero__mock-body {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  padding: 1.1rem 1.15rem 1.25rem;
+}
+
+.hp-hero__mock-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.hp-hero__mock-stat {
+  padding: 0.65rem 0.7rem;
+  border-radius: var(--hp-radius-sm);
+  border: 1px solid var(--hp-color-border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hp-hero__mock-stat-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--hp-color-text-muted);
+}
+
+.hp-hero__mock-stat-value {
+  margin-top: 0.35rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--hp-color-text);
+}
+
+.hp-hero__mock-stat-value--accent {
+  color: var(--hp-color-primary);
+}
+
+.hp-hero__mock-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hp-hero__mock-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--hp-radius-sm);
+  border: 1px solid var(--hp-color-border);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 0.8125rem;
+}
+
+.hp-hero__mock-row-main {
+  color: var(--hp-color-text);
+  font-weight: 500;
+}
+
+.hp-hero__mock-row-meta {
+  color: var(--hp-color-text-muted);
+  font-size: 0.75rem;
+}
+
+.hp-hero__mock-pill {
+  justify-self: end;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border: 1px solid var(--hp-color-border);
+  color: var(--hp-color-text-muted);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.hp-hero__mock-pill--live {
+  color: #b8f7cf;
+  border-color: rgba(72, 209, 140, 0.35);
+  background: rgba(72, 209, 140, 0.08);
+}
+.hp-feature-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.35rem 1.3rem;
+  border-radius: var(--hp-radius-md);
+  border: 1px solid color-mix(in srgb, var(--hp-color-border) 95%, transparent);
+  background: color-mix(in srgb, var(--hp-color-surface) 90%, transparent);
+  box-shadow: var(--hp-shadow-card);
+  transition:
+    transform var(--hp-transition-med),
+    box-shadow var(--hp-transition-med),
+    border-color var(--hp-transition-med);
+}
+
+.hp-feature-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--hp-color-border-strong) 80%, transparent);
+  box-shadow: var(--hp-shadow-card-hover);
+}
+
+.hp-feature-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--hp-radius-sm);
+  border: 1px solid color-mix(in srgb, var(--hp-color-border) 88%, transparent);
+  background: color-mix(in srgb, var(--hp-color-primary-soft) 90%, transparent);
+  color: var(--hp-color-primary);
+}
+
+.hp-feature-card__icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.hp-feature-card__title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--hp-color-text);
+}
+
+.hp-feature-card__text {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.58;
+  letter-spacing: 0.01em;
+  color: var(--hp-color-text-muted);
+}

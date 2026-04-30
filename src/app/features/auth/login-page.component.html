@@ -1,0 +1,282 @@
+<div
+  class="hp-auth"
+  [class.hp-auth--reduce-motion]="reduceMotion()"
+>
+  <div class="hp-auth__ambient" aria-hidden="true">
+    <div class="hp-auth__blob hp-auth__blob--1"></div>
+    <div class="hp-auth__blob hp-auth__blob--2"></div>
+    <div class="hp-auth__blob hp-auth__blob--3"></div>
+    <div class="hp-auth__mesh"></div>
+  </div>
+
+  <header class="hp-auth__toolbar">
+    <a routerLink="/" class="hp-auth__toolbar-home">
+      <span class="hp-auth__toolbar-home-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+      </span>
+      Anasayfa
+    </a>
+    <hp-theme-toggle />
+  </header>
+
+  <div class="hp-auth__wrap hp-container hp-container--auth">
+    <div class="hp-auth__mega">
+      <aside class="hp-auth__brand" aria-label="Marka">
+        <div class="hp-auth__brand-panel">
+          <div class="hp-auth__brand-glow" aria-hidden="true"></div>
+          <a routerLink="/" class="hp-auth__logo-link">
+            <hp-brand-logo
+              imgClass="hp-auth__logo"
+              loading="eager"
+              decoding="async"
+            />
+          </a>
+          <p class="hp-auth__eyebrow">HasPaket platformu</p>
+          <h2 class="hp-auth__headline">
+            Teslimat operasyonlarinizi tek yerden yonetin
+          </h2>
+          <p class="hp-auth__sub">
+            Guvenli giris ile kurye, firma, sef veya yonetim paneline erisin.
+            Gercek zamanli operasyon ve net gorunurluk tek yerde.
+          </p>
+          <ul class="hp-auth__features" aria-hidden="true">
+            <li>
+              <span class="hp-auth__dot"></span>
+              Rol tabanli erisim
+            </li>
+            <li>
+              <span class="hp-auth__dot"></span>
+              Canli harita ve durum
+            </li>
+            <li>
+              <span class="hp-auth__dot"></span>
+              Premium koyu / acik tema
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="hp-auth__panel">
+        <div class="hp-auth__panel-inner">
+          <div class="hp-auth__panel-head">
+            <h1 class="hp-auth__title">Hesabiniza giris yapin</h1>
+            <p class="hp-auth__lead">
+              E-posta ve sifrenizle devam edin
+            </p>
+          </div>
+
+          <div
+            class="hp-auth__segment"
+            role="tablist"
+            aria-label="Giris turu"
+          >
+            <div class="hp-auth__segment-track">
+              <span
+                class="hp-auth__segment-pill"
+                aria-hidden="true"
+                [style.--segment-index]="segmentIndex()"
+              ></span>
+              <button
+                type="button"
+                class="hp-auth__segment-btn"
+                role="tab"
+                [attr.aria-selected]="role() === 'courier'"
+                [disabled]="loading()"
+                (click)="setRole('courier')"
+              >
+                Kurye
+              </button>
+              <button
+                type="button"
+                class="hp-auth__segment-btn"
+                role="tab"
+                [attr.aria-selected]="role() === 'firma'"
+                [disabled]="loading()"
+                (click)="setRole('firma')"
+              >
+                Firma
+              </button>
+              <button
+                type="button"
+                class="hp-auth__segment-btn"
+                role="tab"
+                [attr.aria-selected]="role() === 'chief'"
+                [disabled]="loading()"
+                (click)="setRole('chief')"
+              >
+                Sef
+              </button>
+              <button
+                type="button"
+                class="hp-auth__segment-btn"
+                role="tab"
+                [attr.aria-selected]="role() === 'admin'"
+                [disabled]="loading()"
+                (click)="setRole('admin')"
+              >
+                Admin
+              </button>
+            </div>
+          </div>
+
+          <div class="hp-auth__role-line" aria-live="polite">
+            <p
+              class="hp-auth__role-text"
+              [class.hp-auth__role-text--on]="role() === 'courier'"
+            >
+              Kurye gorevleri ve rotalariniz icin giris yapin.
+            </p>
+            <p
+              class="hp-auth__role-text"
+              [class.hp-auth__role-text--on]="role() === 'firma'"
+            >
+              Firma siparis ve operasyon panelinize erisin.
+            </p>
+            <p
+              class="hp-auth__role-text"
+              [class.hp-auth__role-text--on]="role() === 'chief'"
+            >
+              Operasyon takibi, kurye yonetimi ve siparis mudahalesi icin sef girisi.
+            </p>
+            <p
+              class="hp-auth__role-text"
+              [class.hp-auth__role-text--on]="role() === 'admin'"
+            >
+              Platform yonetimi ve tam denetim icin yonetici girisi.
+            </p>
+          </div>
+
+          @if (submitError()) {
+            <p class="hp-auth__alert hp-auth__alert--error" role="alert">
+              {{ submitError() }}
+            </p>
+          }
+
+          <form class="hp-auth__form" (submit)="onSubmit($event)" novalidate>
+            <div
+              class="hp-auth__field"
+              [class.hp-auth__field--error]="emailError()"
+            >
+              <label class="hp-auth__label" for="hp-login-email">E-posta</label>
+              <div class="hp-auth__input-wrap">
+                <input
+                  id="hp-login-email"
+                  class="hp-auth__input"
+                  [class.hp-auth__input--error]="emailError()"
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  [value]="email()"
+                  (input)="email.set($any($event.target).value)"
+                  [attr.aria-invalid]="emailError() ? 'true' : null"
+                  [attr.aria-describedby]="emailError() ? 'hp-login-email-err' : null"
+                  [disabled]="loading()"
+                  placeholder="ornek@firma.com"
+                  required
+                />
+              </div>
+              @if (emailError()) {
+                <span id="hp-login-email-err" class="hp-auth__hint hp-auth__hint--error">{{
+                  emailError()
+                }}</span>
+              }
+            </div>
+
+            <div
+              class="hp-auth__field"
+              [class.hp-auth__field--error]="passwordError()"
+            >
+              <label class="hp-auth__label" for="hp-login-password">Sifre</label>
+              <div class="hp-auth__input-wrap">
+                <input
+                  id="hp-login-password"
+                  class="hp-auth__input"
+                  [class.hp-auth__input--error]="passwordError()"
+                  type="password"
+                  name="password"
+                  autocomplete="current-password"
+                  [value]="password()"
+                  (input)="password.set($any($event.target).value)"
+                  [attr.aria-invalid]="passwordError() ? 'true' : null"
+                  [attr.aria-describedby]="passwordError() ? 'hp-login-password-err' : null"
+                  [disabled]="loading()"
+                  placeholder="........"
+                  required
+                />
+              </div>
+              @if (passwordError()) {
+                <span id="hp-login-password-err" class="hp-auth__hint hp-auth__hint--error">{{
+                  passwordError()
+                }}</span>
+              }
+            </div>
+
+            <div class="hp-auth__row">
+              <label class="hp-auth__check">
+                <input
+                  type="checkbox"
+                  name="remember"
+                  [checked]="remember()"
+                  (change)="remember.set($any($event.target).checked)"
+                  [disabled]="loading()"
+                />
+                <span>Beni hatirla</span>
+              </label>
+              <a
+                href="#"
+                class="hp-auth__link"
+                (click)="onForgotPassword($event)"
+              >
+                Sifremi unuttum
+              </a>
+            </div>
+
+            <button
+              type="submit"
+              class="hp-auth__submit"
+              [class.hp-auth__submit--loading]="loading()"
+              [disabled]="loading()"
+              [attr.aria-busy]="loading()"
+            >
+              @if (loading()) {
+                <span class="hp-auth__submit-spinner" aria-hidden="true"></span>
+                <span>Giris yapiliyor...</span>
+              } @else {
+                Giris Yap
+              }
+            </button>
+          </form>
+
+          <div class="hp-auth__demo-card hp-login-demo-box" aria-label="Demo hesaplar">
+            <p class="hp-auth__demo-title">Demo Hesaplar:</p>
+            <p class="hp-auth__demo-line"><strong>Admin:</strong></p>
+            <p class="hp-auth__demo-line">admin@haspaket.com</p>
+            <p class="hp-auth__demo-line">Admin123!</p>
+            <p class="hp-auth__demo-line"><strong>Sef:</strong></p>
+            <p class="hp-auth__demo-line">sef@haspaket.com</p>
+            <p class="hp-auth__demo-line">Sef123!</p>
+            <p class="hp-auth__demo-line"><strong>Firma:</strong></p>
+            <p class="hp-auth__demo-line">firma@haspaket.com</p>
+            <p class="hp-auth__demo-line">Firma123!</p>
+            <p class="hp-auth__demo-line">firma@test.com / 123456</p>
+            <p class="hp-auth__demo-line"><strong>Kurye:</strong></p>
+            <p class="hp-auth__demo-line">kurye@haspaket.com</p>
+            <p class="hp-auth__demo-line">Kurye123!</p>
+            <p class="hp-auth__demo-line">kurye@test.com / 123456</p>
+          </div>
+
+          <p class="hp-auth__fineprint">
+            Demo ortami - giris bilgileri yalnizca arayuz akislarini dogrular.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <p class="hp-auth__back">
+      <a routerLink="/" class="hp-auth__back-link"><- Anasayfaya don</a>
+    </p>
+  </div>
+</div>

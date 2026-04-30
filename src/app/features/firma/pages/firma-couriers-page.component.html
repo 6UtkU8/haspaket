@@ -1,0 +1,53 @@
+<div class="hp-fcouriers hp-shell-page">
+  <section class="hp-fcouriers__tools" aria-label="Kurye filtreleri">
+    <input
+      type="search"
+      placeholder="Kurye veya bölge ara"
+      [ngModel]="q()"
+      (ngModelChange)="q.set($event)"
+    />
+    <select [ngModel]="filter()" (ngModelChange)="filter.set($event)">
+      <option value="all">Tümü</option>
+      <option value="active">Aktif</option>
+      <option value="offline">Müsait değil</option>
+    </select>
+  </section>
+
+    <section class="hp-fcouriers__grid hp-shell-stagger" aria-label="Kurye listesi">
+    @for (c of filtered(); track c.id) {
+      <hp-panel-card>
+        <div class="hp-fcouriers__card">
+          <div class="hp-fcouriers__head">
+            <h3>{{ c.name }}</h3>
+            <span class="hp-fcouriers__badge" [class.hp-fcouriers__badge--muted]="!c.active">
+              {{ c.active ? 'Aktif' : 'Müsait değil' }}
+            </span>
+          </div>
+          <p>Bölge: {{ c.region }}</p>
+          <p>
+            Aktif teslimat: <strong>{{ c.activeDeliveries }}</strong>
+            <span class="hp-fcouriers__perf-badge">Perf {{ c.score }}%</span>
+          </p>
+          <div class="hp-fcouriers__perf">
+            <span>Performans</span>
+            <div class="hp-fcouriers__track" aria-hidden="true">
+              <span class="hp-fcouriers__fill" [style.width.%]="c.score"></span>
+            </div>
+            <span>{{ c.score }}%</span>
+          </div>
+          <a class="hp-fcouriers__detail-link" [routerLink]="['/firma/kuryeler', c.id]">Detay</a>
+        </div>
+      </hp-panel-card>
+    } @empty {
+      <hp-panel-card>
+        <div class="hp-fcouriers__empty-state">
+          <span class="hp-fcouriers__empty-icon" aria-hidden="true">🚚</span>
+          <div>
+            <p class="hp-fcouriers__empty">Filtrelere uygun kurye bulunamadı.</p>
+            <p class="hp-fcouriers__empty-sub">Kurye verisi gelince kartlar burada listelenecek.</p>
+          </div>
+        </div>
+      </hp-panel-card>
+    }
+  </section>
+</div>

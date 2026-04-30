@@ -1,0 +1,11 @@
+/**
+ * Kurye paneli: routed sayfalar ayrı bileşen host'unda; sayfa kutusu için genişlik hizası
+ * (`hp-shell-enter` ve `hp-shell-stagger` küreselde `_panel-shell-animations.scss`).
+ */
+.hp-courier__content .hp-shell-page {
+  width: 100%;
+  max-width: min(var(--hp-content-max), 100%);
+  margin-inline: auto;
+  min-width: 0;
+  box-sizing: border-box;
+}
