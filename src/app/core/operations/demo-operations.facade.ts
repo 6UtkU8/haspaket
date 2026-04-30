@@ -1,4 +1,13 @@
-import { Injectable, computed, effect, inject, NgZone, PLATFORM_ID, signal } from '@angular/core';
+import {
+  DestroyRef,
+  Injectable,
+  computed,
+  effect,
+  inject,
+  NgZone,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import {
   AdminOrderPatchInput,
@@ -48,6 +57,7 @@ export class DemoOperationsFacade {
 
   private readonly platformId = inject(PLATFORM_ID);
   private readonly ngZone = inject(NgZone);
+  private readonly destroyRef = inject(DestroyRef);
   private persistLocked = false;
 
   readonly orders = computed(() => this.ordersState());
@@ -79,9 +89,38 @@ export class DemoOperationsFacade {
   });
 
   constructor() {
-    /** Saniyede bir — Zone içinde böylece süre/metin bağları tüm panellerde canlı yenilenir. */
+    /** Süre göstergeleri — görünmez sekmede durdurulur (gereksiz sinyal/çizim yükünü keser). */
     if (isPlatformBrowser(this.platformId)) {
-      setInterval(() => this.nowMs.set(Date.now()), 1000);
+      const bumpNow = (): void => {
+        this.nowMs.set(Date.now());
+      };
+      let tickId: ReturnType<typeof setInterval> | undefined;
+      const restartTick = (): void => {
+        if (tickId !== undefined) {
+          clearInterval(tickId);
+          tickId = undefined;
+        }
+        bumpNow();
+        tickId = setInterval(bumpNow, 1000);
+      };
+      const onVisibility = (): void => {
+        if (document.visibilityState === 'hidden') {
+          if (tickId !== undefined) {
+            clearInterval(tickId);
+            tickId = undefined;
+          }
+          return;
+        }
+        restartTick();
+      };
+      restartTick();
+      document.addEventListener('visibilitychange', onVisibility);
+      this.destroyRef.onDestroy(() => {
+        document.removeEventListener('visibilitychange', onVisibility);
+        if (tickId !== undefined) {
+          clearInterval(tickId);
+        }
+      });
     }
 
     if (isPlatformBrowser(this.platformId)) {

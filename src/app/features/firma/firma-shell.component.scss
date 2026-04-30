@@ -199,7 +199,7 @@
   padding: var(--hp-panel-header-pad-y) var(--hp-pad-x);
   border-bottom: 1px solid var(--hp-color-border);
   background: var(--hp-shell-header-bg);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(6px);
 
   @media (min-width: 960px) {
     align-items: center;

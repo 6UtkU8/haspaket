@@ -37,8 +37,9 @@
   /* Butonlar — biraz daha yumuşak köşe, primary ile hizalı */
   --hp-btn-radius: 10px;
 
-  --hp-font-heading: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --hp-font-body: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /* İlk yüklemede harici web font beklemesi yok — yerel sistem yığını */
+  --hp-font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --hp-font-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   /* Courier panel — sabit tipografi ölçeği */
   --fs-xs: var(--hp-panel-caption);
@@ -63,12 +64,12 @@
   --hp-transition-fast: 180ms var(--hp-ease-out);
   --hp-transition-med: 260ms var(--hp-ease-out);
 
-  /* Giriş / reveal — abartısız, premium hissi */
-  --hp-motion-logo-enter: 0.78s; /* 600–900ms aralığında logo girişi */
-  --hp-motion-enter: 0.72s;
-  --hp-motion-enter-short: 0.52s;
-  --hp-motion-stagger: 55ms;
-  --hp-motion-reveal: 0.58s;
+  /* Landing girişi — daha kısa süre ilk boyamayı hızlandırır (panel dışında da kullanılmıyor) */
+  --hp-motion-logo-enter: 0.48s;
+  --hp-motion-enter: 0.48s;
+  --hp-motion-enter-short: 0.38s;
+  --hp-motion-stagger: 36ms;
+  --hp-motion-reveal: 0.42s;
 
   /* İkincil metin (dark) */
   --hp-color-text-secondary: #c8cedd;

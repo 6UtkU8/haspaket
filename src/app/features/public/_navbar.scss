@@ -5,8 +5,8 @@
   isolation: isolate;
   border-bottom: 1px solid transparent;
   background: color-mix(in srgb, var(--hp-color-bg) 70%, transparent);
-  backdrop-filter: blur(16px) saturate(1.28);
-  -webkit-backdrop-filter: blur(16px) saturate(1.28);
+  backdrop-filter: blur(8px) saturate(1.06);
+  -webkit-backdrop-filter: blur(8px) saturate(1.06);
   transition:
     background var(--hp-transition-med),
     box-shadow var(--hp-transition-med),
@@ -16,7 +16,7 @@
 .hp-navbar--scrolled {
   background: color-mix(in srgb, var(--hp-color-bg) 86%, transparent);
   border-bottom-color: color-mix(in srgb, var(--hp-color-border) 58%, transparent);
-  box-shadow: 0 8px 32px color-mix(in srgb, #000 42%, transparent);
+  box-shadow: 0 10px 28px color-mix(in srgb, #000 32%, transparent);
 }
 
 .hp-navbar__inner {
@@ -230,7 +230,7 @@
   display: flex;
   justify-content: flex-end;
   background: rgba(6, 8, 12, 0.55);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(4px);
 }
 
 .hp-navbar__drawer-panel {
@@ -294,8 +294,8 @@
     0 0 0 1px color-mix(in srgb, var(--hp-color-primary) 18%, transparent),
     0 6px 22px color-mix(in srgb, var(--hp-color-primary) 22%, transparent),
     0 14px 36px color-mix(in srgb, #000 35%, transparent);
-  backdrop-filter: blur(12px) saturate(1.15);
-  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  backdrop-filter: blur(6px) saturate(1.04);
+  -webkit-backdrop-filter: blur(6px) saturate(1.04);
   transition:
     transform 0.2s ease,
     box-shadow 0.22s ease,

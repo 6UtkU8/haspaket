@@ -46,7 +46,7 @@ html.theme-light .hp-courier__header,
 html[data-theme='light'] .hp-firma__header,
 html[data-theme='light'] .hp-admin__header,
 html[data-theme='light'] .hp-courier__header {
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
 }
 
 @media (prefers-reduced-motion: reduce) {

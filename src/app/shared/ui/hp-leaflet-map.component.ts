@@ -12,6 +12,7 @@ import {
   PLATFORM_ID,
   runInInjectionContext,
   ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import * as L from 'leaflet';
@@ -58,6 +59,8 @@ const TILE_OPTS = {
   selector: 'hp-leaflet-map',
   standalone: true,
   templateUrl: './hp-leaflet-map.component.html',
+  styleUrl: './hp-leaflet-map.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class HpLeafletMapComponent implements AfterViewInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);

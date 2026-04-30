@@ -14,6 +14,7 @@ import { BRAND_LOGO_DARK, BRAND_LOGO_LIGHT } from '../../core/brand/brand-assets
       [attr.alt]="altText()"
       [attr.loading]="loading()"
       [attr.decoding]="decoding()"
+      [attr.fetchpriority]="fetchPriority() ?? null"
       (animationend)="animationEnd.emit($event)"
     />
   `,
@@ -48,6 +49,8 @@ export class HpBrandLogoComponent {
   readonly altText = input('HasPaket');
   readonly loading = input<'eager' | 'lazy'>('lazy');
   readonly decoding = input<'async' | 'auto' | 'sync'>('async');
+  /** LCP / üst navbar için `high` kullanılabilir */
+  readonly fetchPriority = input<'high' | 'low' | 'auto' | undefined>(undefined);
 
   readonly animationEnd = output<AnimationEvent>();
 

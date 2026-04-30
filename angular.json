@@ -31,7 +31,6 @@
             ],
             "styles": [
               "node_modules/@angular/cdk/overlay-prebuilt.css",
-              "node_modules/leaflet/dist/leaflet.css",
               "src/styles.scss"
             ],
             "allowedCommonJsDependencies": ["leaflet"]

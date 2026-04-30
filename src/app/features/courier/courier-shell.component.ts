@@ -140,18 +140,12 @@ export class CourierShellComponent {
 
     const run = (): void => {
       const host = this.courierScroll?.nativeElement;
-      if (host && host.scrollTop !== 0) {
+      if (host?.scrollTop) {
         host.scrollTop = 0;
       }
     };
     run();
-    queueMicrotask(() => {
-      run();
-      const host = this.courierScroll?.nativeElement;
-      if (host && host.scrollTop !== 0) {
-        requestAnimationFrame(run);
-      }
-    });
+    requestAnimationFrame(run);
   }
 
   toggleSidebar(): void {

@@ -6,7 +6,7 @@
 @keyframes hp-shell-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -15,37 +15,38 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  /* Kısa giriş — route değişiminde frame maliyetini ve hissedilen gecikmeyi azaltır */
   .hp-shell-page {
-    animation: hp-shell-enter 0.42s var(--hp-ease-out) both;
+    animation: hp-shell-enter 0.22s var(--hp-ease-out) both;
   }
 
   .hp-shell-stagger > * {
-    animation: hp-shell-enter 0.36s var(--hp-ease-out) both;
+    animation: hp-shell-enter 0.2s var(--hp-ease-out) both;
   }
 
   .hp-shell-stagger > *:nth-child(1) {
     animation-delay: 0ms;
   }
   .hp-shell-stagger > *:nth-child(2) {
-    animation-delay: 40ms;
+    animation-delay: 18ms;
   }
   .hp-shell-stagger > *:nth-child(3) {
-    animation-delay: 80ms;
+    animation-delay: 36ms;
   }
   .hp-shell-stagger > *:nth-child(4) {
-    animation-delay: 120ms;
+    animation-delay: 54ms;
   }
   .hp-shell-stagger > *:nth-child(5) {
-    animation-delay: 160ms;
+    animation-delay: 72ms;
   }
   .hp-shell-stagger > *:nth-child(6) {
-    animation-delay: 200ms;
+    animation-delay: 90ms;
   }
   .hp-shell-stagger > *:nth-child(7) {
-    animation-delay: 240ms;
+    animation-delay: 108ms;
   }
   .hp-shell-stagger > *:nth-child(8) {
-    animation-delay: 280ms;
+    animation-delay: 126ms;
   }
 }
 
